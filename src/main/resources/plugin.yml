@@ -1,0 +1,4 @@
+name: Xenith
+version: '${project.version}'
+main: me.ogali.xenithlibrary.XenithLibrary
+api-version: '1.20'

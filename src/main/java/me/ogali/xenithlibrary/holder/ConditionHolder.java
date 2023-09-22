@@ -9,14 +9,13 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 public class ConditionHolder {
 
     private final List<AbstractCondition<?, ?>> conditionList;
 
     @Setter
-    private boolean singleConditionResult;
+    private boolean chain;
 
     public ConditionHolder() {
         this.conditionList = new ArrayList<>();
@@ -26,19 +25,133 @@ public class ConditionHolder {
         conditionList.add(condition);
     }
 
-    public boolean checkAllConditionsInorder(Player player, ItemStack itemStack) {
-        if (singleConditionResult) {
-            Optional<AbstractCondition<?, ?>> lowestPriorityCondition = conditionList.stream().max(Comparator.naturalOrder());
-            if (lowestPriorityCondition.isEmpty()) return false;
-            if (lowestPriorityCondition.get() instanceof ItemStackCondition<?> itemStackCondition) {
-                itemStackCondition.evaluate(itemStack, player);
-                return true;
-            }
-            return false;
+    public final boolean checkAllConditionsAndExecuteActions(Player player, Object... values) {
+        if (chain) {
+            return evaluateItemStackConditionsChainedAndExecuteActions(player, values);
         }
-        for (AbstractCondition<?, ?> abstractCondition : conditionList) {
+        return evaluateConditionsAndExecuteActions(player, values);
+    }
+
+    public final boolean checkAllConditionsAndExecuteFailActions(Player player, Object... values) {
+        if (chain) {
+            return evaluateItemStackConditionsChainedAndExecuteFailActions(player, values);
+        }
+        return evaluateConditionsAndExecuteFailActions(player, values);
+    }
+
+    /**
+     * @param player the player
+     * @param values any value required for the condition
+     * @return evaluates all conditions in the list are evaluated as true, otherwise false
+     */
+    private boolean evaluateConditionsAndExecuteActions(Player player, Object... values) {
+        ItemStack itemStack = null;
+
+        for (Object value : values) {
+            if (value instanceof ItemStack item) {
+                itemStack = item;
+            }
+        }
+
+        // Sort conditions from the lowest priority to highest
+        List<AbstractCondition<?, ?>> sortedConditionList = conditionList.stream().sorted(Comparator.reverseOrder()).toList();
+
+        for (AbstractCondition<?, ?> abstractCondition : sortedConditionList) {
             if (abstractCondition instanceof ItemStackCondition<?> itemStackCondition) {
-                if (!itemStackCondition.evaluate(itemStack, player)) return false;
+                if (itemStack == null) return false;
+                if (itemStackCondition.evaluate(itemStack, player)) {
+                    itemStackCondition.executePassActions(player, values);
+                    return true;
+                }
+                itemStackCondition.executeFailActions(player, values);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param player the player
+     * @param values any value required for the condition
+     * @return evaluates all conditions in the list are evaluated as true, otherwise false
+     */
+    private boolean evaluateConditionsAndExecuteFailActions(Player player, Object... values) {
+        ItemStack itemStack = null;
+
+        for (Object value : values) {
+            if (value instanceof ItemStack item) {
+                itemStack = item;
+            }
+        }
+
+        // Sort conditions from the lowest priority to highest
+        List<AbstractCondition<?, ?>> sortedConditionList = conditionList.stream().sorted(Comparator.reverseOrder()).toList();
+
+        for (AbstractCondition<?, ?> abstractCondition : sortedConditionList) {
+            if (abstractCondition instanceof ItemStackCondition<?> itemStackCondition) {
+                if (itemStack == null) return false;
+                if (itemStackCondition.evaluate(itemStack, player)) return true;
+                itemStackCondition.executeFailActions(player, values);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param player the Player
+     * @param values any value required for the condition
+     * @return true if all conditions in the list are evaluated as true, otherwise false
+     */
+    private boolean evaluateItemStackConditionsChainedAndExecuteActions(Player player, Object... values) {
+        ItemStack itemStack = null;
+
+        for (Object value : values) {
+            if (value instanceof ItemStack item) {
+                itemStack = item;
+            }
+        }
+
+        // Sort conditions from the lowest priority to highest
+        List<AbstractCondition<?, ?>> sortedConditionList = conditionList.stream().sorted(Comparator.reverseOrder()).toList();
+
+        for (AbstractCondition<?, ?> abstractCondition : sortedConditionList) {
+            if (abstractCondition instanceof ItemStackCondition<?> itemStackCondition) {
+                if (itemStack == null) return false;
+                if (!itemStackCondition.evaluate(itemStack, player)) {
+                    itemStackCondition.executeFailActions(player, values);
+                    return false;
+                }
+                itemStackCondition.executePassActions(player, values);
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param player the Player
+     * @param values any value required for the condition
+     * @return true if all conditions in the list are evaluated as true, otherwise false
+     */
+    private boolean evaluateItemStackConditionsChainedAndExecuteFailActions(Player player, Object... values) {
+        ItemStack itemStack = null;
+
+        for (Object value : values) {
+            if (value instanceof ItemStack item) {
+                itemStack = item;
+            }
+        }
+
+        // Sort conditions from the lowest priority to highest
+        List<AbstractCondition<?, ?>> sortedConditionList = conditionList.stream().sorted(Comparator.reverseOrder()).toList();
+
+        for (AbstractCondition<?, ?> abstractCondition : sortedConditionList) {
+            if (abstractCondition instanceof ItemStackCondition<?> itemStackCondition) {
+                if (itemStack == null) return false;
+                if (!itemStackCondition.evaluate(itemStack, player)) {
+                    itemStackCondition.executeFailActions(player, values);
+                    return false;
+                }
             }
         }
         return true;

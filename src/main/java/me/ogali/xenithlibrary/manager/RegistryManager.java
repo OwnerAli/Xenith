@@ -9,7 +9,7 @@ public class RegistryManager {
 
     private final Map<Class<? extends Registry<?, ?>>, Registry<?, ?>> registryMap = new HashMap<>();
 
-    public void setRegistry(Class<? extends Registry<?, ?>> registryClass) {
+    public void initializeRegistry(Class<? extends Registry<?, ?>> registryClass) {
         try {
             Registry<?, ?> registryInstance = registryClass.getDeclaredConstructor().newInstance();
             registryMap.put(registryClass, registryInstance);

@@ -1,11 +1,17 @@
 package me.ogali.xenithlibrary.registiry.impl;
 
+import lombok.Getter;
 import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
 import me.ogali.xenithlibrary.registiry.domain.impl.AbstractMapRegistry;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+@Getter
 public class ConditionRegistry extends AbstractMapRegistry<AbstractCondition<?, ?>, String> {
+
+    private final List<Class<? extends AbstractCondition<?, ?>>> conditionTypes = new ArrayList<>();
 
     @Override
     public void register(AbstractCondition<?, ?> abstractCondition) {

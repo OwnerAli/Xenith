@@ -6,6 +6,7 @@ import me.ogali.xenithlibrary.action.domain.AbstractAction;
 import me.ogali.xenithlibrary.action.domain.impl.AbstractPlayerAction;
 import me.ogali.xenithlibrary.action.domain.impl.impl.CancellableTypeAction;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,6 +21,7 @@ public abstract class AbstractCondition<K, V> implements Condition<K> {
     private final int priority;
     private final boolean negate;
     private final V value;
+
     private final List<AbstractAction<?, ?>> conditionPassActionList;
     private final List<AbstractAction<?, ?>> conditionFailActionList;
 
@@ -32,31 +34,43 @@ public abstract class AbstractCondition<K, V> implements Condition<K> {
         this.conditionFailActionList = new ArrayList<>();
     }
 
+    public void executePassActions(Player player, Object... values) {
+        executePlayerActions(player, conditionPassActionList);
+        for (Object value : values) {
+            if (value instanceof Cancellable cancellable) {
+                executeCancellableActions(cancellable, conditionPassActionList);
+            }
+        }
+    }
+
+    public void executeFailActions(Player player, Object... values) {
+        executePlayerActions(player, conditionFailActionList);
+        for (Object value : values) {
+            if (value instanceof Cancellable cancellable) {
+                executeCancellableActions(cancellable, conditionFailActionList);
+            }
+        }
+    }
+
     public abstract String getType();
+
+    public abstract String getDisplayText();
 
     @Override
     public int compareTo(@NotNull Condition<?> o) {
         return Integer.compare(o.getPriority(), getPriority());
     }
 
-    protected <T> void executeActions(T value) {
-        if (value instanceof LivingEntity livingEntity) {
-            executePlayerActions(livingEntity);
-        } else if (value instanceof Cancellable cancellable) {
-            executeCancellableActions(cancellable);
-        }
-    }
-
-    private void executePlayerActions(LivingEntity livingEntity) {
-        conditionPassActionList.forEach(abstractAction -> {
+    private void executePlayerActions(LivingEntity livingEntity, List<AbstractAction<?, ?>> actionsList) {
+        actionsList.forEach(abstractAction -> {
             if (abstractAction instanceof AbstractPlayerAction<?> abstractPlayerAction) {
                 abstractPlayerAction.execute(livingEntity);
             }
         });
     }
 
-    private void executeCancellableActions(Cancellable cancellable) {
-        conditionPassActionList.forEach(abstractAction -> {
+    private void executeCancellableActions(Cancellable cancellable, List<AbstractAction<?, ?>> actionsList) {
+        actionsList.forEach(abstractAction -> {
             if (abstractAction instanceof CancellableTypeAction cancellableTypeAction) {
                 cancellableTypeAction.execute(cancellable);
             }

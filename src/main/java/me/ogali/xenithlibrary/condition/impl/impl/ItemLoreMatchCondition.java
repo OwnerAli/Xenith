@@ -1,6 +1,7 @@
 package me.ogali.xenithlibrary.condition.impl.impl;
 
 import me.ogali.xenithlibrary.condition.impl.ItemStackCondition;
+import me.ogali.xenithlibrary.utilities.Chat;
 
 import java.util.List;
 
@@ -23,5 +24,10 @@ public class ItemLoreMatchCondition extends ItemStackCondition<List<String>> {
 //        executeActions(player);
 //        return true;
 //    }
+
+    @Override
+    public String getDisplayText() {
+        return Chat.colorize("&fPlayer's item lore matches");
+    }
 
 }

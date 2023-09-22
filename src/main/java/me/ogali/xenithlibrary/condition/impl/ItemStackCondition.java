@@ -1,12 +1,9 @@
 package me.ogali.xenithlibrary.condition.impl;
 
 import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
-import me.ogali.xenithlibrary.condition.domain.Condition;
+import me.ogali.xenithlibrary.utilities.Chat;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
 
 public class ItemStackCondition<T> extends AbstractCondition<ItemStack, T> {
 
@@ -27,6 +24,11 @@ public class ItemStackCondition<T> extends AbstractCondition<ItemStack, T> {
     @Override
     public String getType() {
         return "itemStack";
+    }
+
+    @Override
+    public String getDisplayText() {
+        return Chat.colorize("&fPlayer's item matches");
     }
 
 }

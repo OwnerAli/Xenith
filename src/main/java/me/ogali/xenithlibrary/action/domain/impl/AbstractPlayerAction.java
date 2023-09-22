@@ -7,7 +7,6 @@ public abstract class AbstractPlayerAction<V> extends AbstractAction<LivingEntit
 
     public AbstractPlayerAction(String id, V value) {
         super(id, value);
-
     }
 
 }

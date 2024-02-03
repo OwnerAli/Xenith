@@ -7,6 +7,10 @@ import java.util.List;
 
 public class ItemLoreMatchCondition extends ItemStackCondition<List<String>> {
 
+    public ItemLoreMatchCondition(String id, int priority, boolean negate) {
+        super(id, priority, negate);
+    }
+
     public ItemLoreMatchCondition(String id, int priority, boolean negate, List<String> value) {
         super(id, priority, negate, value);
     }

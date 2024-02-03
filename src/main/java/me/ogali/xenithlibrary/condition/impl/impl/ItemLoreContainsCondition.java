@@ -7,6 +7,10 @@ import org.bukkit.inventory.ItemStack;
 
 public class ItemLoreContainsCondition extends ItemStackCondition<String> {
 
+    public ItemLoreContainsCondition(String id, int priority, boolean negate) {
+        super(id, priority, negate);
+    }
+
     public ItemLoreContainsCondition(String id, int priority, boolean negate, String value) {
         super(id, priority, negate, value);
     }

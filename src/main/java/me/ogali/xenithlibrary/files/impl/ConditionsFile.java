@@ -2,11 +2,9 @@ package me.ogali.xenithlibrary.files.impl;
 
 import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
+import me.ogali.xenithlibrary.condition.impl.BiomeCondition;
 import me.ogali.xenithlibrary.condition.impl.ItemStackCondition;
-import me.ogali.xenithlibrary.condition.impl.impl.ItemDurabilityCondition;
-import me.ogali.xenithlibrary.condition.impl.impl.ItemLoreContainsCondition;
-import me.ogali.xenithlibrary.condition.impl.impl.ItemLoreMatchCondition;
-import me.ogali.xenithlibrary.condition.impl.impl.StringMatchItemCondition;
+import me.ogali.xenithlibrary.condition.impl.impl.*;
 import me.ogali.xenithlibrary.registiry.impl.ConditionRegistry;
 import me.ogali.xenithlibrary.utilities.Serialization;
 import org.bukkit.inventory.ItemStack;
@@ -60,7 +58,7 @@ public class ConditionsFile extends XenithJsonFile<AbstractCondition<?, ?>> {
         }
 
         return switch (type) {
-            case "itemStack" -> new ItemStackCondition<>(key, priority, negate, itemStack);
+            case "itemStack" -> new ItemMatchCondition(key, priority, negate, itemStack);
             case "itemLoreContains" -> new ItemLoreContainsCondition(key, priority, negate, (String) value);
             case "itemLoreMatch" -> {
                 value = getStringList(key + ".value");
@@ -68,6 +66,7 @@ public class ConditionsFile extends XenithJsonFile<AbstractCondition<?, ?>> {
             }
             case "stringMatch" -> new StringMatchItemCondition(key, priority, negate, (String) value);
             case "itemDurability" -> new ItemDurabilityCondition(key, priority, negate, (Integer) value);
+            case "biome" -> new BiomeCondition(key, priority, negate, (String) value);
             default -> null;
         };
     }

@@ -5,27 +5,28 @@ import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
 import me.ogali.xenithlibrary.registiry.domain.impl.AbstractMapRegistry;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Getter
-public class ConditionRegistry extends AbstractMapRegistry<AbstractCondition<?, ?>, String> {
+public class ConditionRegistry extends AbstractMapRegistry<String, AbstractCondition<?, ?>> {
 
     private final List<Class<? extends AbstractCondition<?, ?>>> conditionTypes = new ArrayList<>();
+
 
     @Override
     public void register(AbstractCondition<?, ?> abstractCondition) {
         getObjectMap().put(abstractCondition.getId(), abstractCondition);
     }
 
-    @Override
-    public void unRegister(String id) {
-        getObjectMap().remove(id);
-    }
-
-    @Override
-    public Optional<AbstractCondition<?, ?>> get(String id) {
-        return Optional.ofNullable(getObjectMap().get(id));
+    /**
+     * Retrieves a collection of all registered AbstractConditions.
+     *
+     * @return A collection of AbstractConditions stored in the registry.
+     * @apiNote This method is part of the public API for external use.
+     */
+    public Collection<AbstractCondition<?, ?>> getRegisteredConditions() {
+        return getObjectMap().values();
     }
 
 }

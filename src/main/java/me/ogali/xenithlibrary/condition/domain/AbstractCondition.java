@@ -20,10 +20,18 @@ public abstract class AbstractCondition<K, V> implements Condition<K> {
     private final String id;
     private final int priority;
     private final boolean negate;
-    private final V value;
+    private V value;
 
     private final List<AbstractAction<?, ?>> conditionPassActionList;
     private final List<AbstractAction<?, ?>> conditionFailActionList;
+
+    protected AbstractCondition(String id, int priority, boolean negate) {
+        this.id = id;
+        this.priority = priority;
+        this.negate = negate;
+        this.conditionPassActionList = new ArrayList<>();
+        this.conditionFailActionList = new ArrayList<>();
+    }
 
     protected AbstractCondition(String id, int priority, boolean negate, V value) {
         this.id = id;
@@ -55,6 +63,11 @@ public abstract class AbstractCondition<K, V> implements Condition<K> {
     public abstract String getType();
 
     public abstract String getDisplayText();
+
+    @Override
+    public boolean isNegate() {
+        return negate;
+    }
 
     @Override
     public int compareTo(@NotNull Condition<?> o) {

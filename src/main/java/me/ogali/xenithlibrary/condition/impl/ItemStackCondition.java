@@ -1,14 +1,23 @@
 package me.ogali.xenithlibrary.condition.impl;
 
+import lombok.Getter;
+import lombok.Setter;
 import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
 import me.ogali.xenithlibrary.utilities.Chat;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
-public class ItemStackCondition<T> extends AbstractCondition<ItemStack, T> {
+public abstract class ItemStackCondition<T> extends AbstractCondition<ItemStack, T> {
 
     private final boolean negate;
-    private final T value;
+
+    @Setter @Getter
+    private T value;
+
+    public ItemStackCondition(String id, int priority, boolean negate) {
+        super(id, priority, negate);
+        this.negate = negate;
+    }
 
     public ItemStackCondition(String id, int priority, boolean negate, T value) {
         super(id, priority, negate, value);

@@ -33,6 +33,10 @@ public class Chat {
         toWhom.sendMessage(colorize(message));
     }
 
+    public static void tellFormatted(CommandSender toWhom, String message, Object... args) {
+        toWhom.sendMessage(colorize(String.format(message, args)));
+    }
+
     public static String colorize(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }

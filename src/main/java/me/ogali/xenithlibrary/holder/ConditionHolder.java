@@ -1,8 +1,10 @@
 package me.ogali.xenithlibrary.holder;
 
+import lombok.Getter;
 import lombok.Setter;
 import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
 import me.ogali.xenithlibrary.condition.impl.ItemStackCondition;
+import me.ogali.xenithlibrary.condition.impl.StringCondition;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -12,6 +14,7 @@ import java.util.List;
 
 public class ConditionHolder {
 
+    @Getter
     private final List<AbstractCondition<?, ?>> conditionList;
 
     @Setter
@@ -46,10 +49,13 @@ public class ConditionHolder {
      */
     private boolean evaluateConditionsAndExecuteActions(Player player, Object... values) {
         ItemStack itemStack = null;
+        String string = null;
 
         for (Object value : values) {
             if (value instanceof ItemStack item) {
                 itemStack = item;
+            } else if (value instanceof String str) {
+                string = str;
             }
         }
 
@@ -64,6 +70,14 @@ public class ConditionHolder {
                     return true;
                 }
                 itemStackCondition.executeFailActions(player, values);
+                return false;
+            } else if (abstractCondition instanceof StringCondition stringCondition) {
+                if (string == null) return false;
+                if (stringCondition.evaluate(string, player)) {
+                    stringCondition.executePassActions(player, values);
+                    return true;
+                }
+                stringCondition.executeFailActions(player, values);
                 return false;
             }
         }

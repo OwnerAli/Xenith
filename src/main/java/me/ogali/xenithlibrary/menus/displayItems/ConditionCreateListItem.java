@@ -8,8 +8,8 @@ public class ConditionCreateListItem extends ItemBuilder {
 
     public ConditionCreateListItem(String abstractConditionClassName, boolean inverted) {
         super(Material.COMPARATOR);
-        setName(inverted ? Chat.colorize("&aIf " + abstractConditionClassName) :
-                Chat.colorize("&cIf Not " + abstractConditionClassName));
+        setName(inverted ? Chat.colorize("&cIf Not " + abstractConditionClassName)
+                : Chat.colorize("&aIf " + abstractConditionClassName));
     }
 
 }

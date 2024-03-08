@@ -23,7 +23,7 @@ public class PlayerChatListener implements Listener {
                         chatPrompt.unPrompt(event.getPlayer());
                         return;
                     }
-                    chatPrompt.setValue(event.getMessage());
+                    if (!chatPrompt.setValue(event.getMessage())) return;
                     chatPrompt.unPrompt(event.getPlayer());
                 });
     }

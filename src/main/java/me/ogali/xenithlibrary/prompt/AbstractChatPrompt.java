@@ -2,22 +2,20 @@ package me.ogali.xenithlibrary.prompt;
 
 import lombok.Getter;
 import me.ogali.xenithlibrary.XenithLibrary;
-import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
-import me.ogali.xenithlibrary.manager.RegistryManager;
 import me.ogali.xenithlibrary.registiry.impl.ChatPromptRegistry;
-import me.ogali.xenithlibrary.registiry.impl.ConditionRegistry;
 import me.ogali.xenithlibrary.utilities.Chat;
 import org.bukkit.entity.Player;
 
 @Getter
-public abstract class AbstractChatPrompt<T extends AbstractCondition<?, ?>> implements ChatPrompt {
+public abstract class AbstractChatPrompt<T> implements ChatPrompt {
 
-    private final T abstractCondition;
+    private final T type;
 
-    public AbstractChatPrompt(T abstractCondition) {
-        this.abstractCondition = abstractCondition;
+    public AbstractChatPrompt(T type) {
+        this.type = type;
     }
 
+    @Override
     public void prompt(Player player) {
         Chat.tell(player, "&aPlease input the desired value. To cancel, type '!cancel'.");
         XenithLibrary.getInstance().getRegistryManager()
@@ -27,12 +25,10 @@ public abstract class AbstractChatPrompt<T extends AbstractCondition<?, ?>> impl
     }
 
     public void unPrompt(Player player) {
-        RegistryManager registryManager = XenithLibrary.getInstance().getRegistryManager();
-        registryManager.getRegistry(ChatPromptRegistry.class)
+        XenithLibrary.getInstance().getRegistryManager()
+                .getRegistry(ChatPromptRegistry.class)
                 .unRegister(player);
-        registryManager.getRegistry(ConditionRegistry.class)
-                .register(abstractCondition);
-        Chat.tell(player, "&aCondition successfully created! &7(" + abstractCondition.getId() + ")");
+        Chat.tell(player, "&cPrompt cancelled.");
     }
 
 }

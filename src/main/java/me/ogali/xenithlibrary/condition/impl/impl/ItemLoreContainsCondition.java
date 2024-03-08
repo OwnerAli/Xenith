@@ -2,7 +2,6 @@ package me.ogali.xenithlibrary.condition.impl.impl;
 
 import me.ogali.xenithlibrary.condition.impl.ItemStackCondition;
 import me.ogali.xenithlibrary.utilities.Chat;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
 public class ItemLoreContainsCondition extends ItemStackCondition<String> {
@@ -21,7 +20,7 @@ public class ItemLoreContainsCondition extends ItemStackCondition<String> {
     }
 
     @Override
-    public boolean evaluate(ItemStack input, LivingEntity livingEntity) {
+    public boolean evaluate(ItemStack input) {
         if (input.getItemMeta() == null) return false;
         if (input.getItemMeta().getLore() == null) return false;
         for (String string : input.getItemMeta().getLore()) {

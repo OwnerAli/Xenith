@@ -68,7 +68,7 @@ public class ItemInputConditionMenu {
                     Chat.tell(player, "&aCondition successfully created! &7(" + itemStackCondition.getId() + ")");
                     XenithLibrary.getInstance().getRegistryManager().getRegistry(ConditionRegistry.class)
                             .register(itemStackCondition);
-                    player.closeInventory();
+                    new ConditionSettingsMenu().show(player, itemStackCondition);
                     return;
                 }
             }

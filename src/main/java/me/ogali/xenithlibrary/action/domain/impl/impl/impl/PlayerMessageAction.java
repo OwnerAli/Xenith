@@ -6,12 +6,17 @@ import org.bukkit.entity.LivingEntity;
 
 public class PlayerMessageAction extends StringValuePlayerAction {
 
-    public PlayerMessageAction(String id, String value) {
-        super(id, value);
+    public PlayerMessageAction(String id, String value, double chance) {
+        super(id, value, chance);
+    }
+
+    public PlayerMessageAction(String id) {
+        super(id, "", 100.0);
     }
 
     @Override
     public void execute(LivingEntity livingEntity) {
+        if (!isSuccessful(getChance())) return;
         Chat.tell(livingEntity, getValue());
     }
 

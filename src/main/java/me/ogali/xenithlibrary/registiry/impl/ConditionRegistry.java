@@ -11,8 +11,7 @@ import java.util.List;
 @Getter
 public class ConditionRegistry extends AbstractMapRegistry<String, AbstractCondition<?, ?>> {
 
-    private final List<Class<? extends AbstractCondition<?, ?>>> conditionTypes = new ArrayList<>();
-
+    private final List<Class<? extends AbstractCondition<?, ?>>> conditionTypesList = new ArrayList<>();
 
     @Override
     public void register(AbstractCondition<?, ?> abstractCondition) {

@@ -2,7 +2,7 @@ package me.ogali.xenithlibrary.files.impl;
 
 import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
-import me.ogali.xenithlibrary.condition.impl.BiomeCondition;
+import me.ogali.xenithlibrary.condition.impl.impl.BiomeCondition;
 import me.ogali.xenithlibrary.condition.impl.ItemStackCondition;
 import me.ogali.xenithlibrary.condition.impl.impl.*;
 import me.ogali.xenithlibrary.registiry.impl.ConditionRegistry;

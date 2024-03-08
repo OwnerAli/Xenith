@@ -4,7 +4,6 @@ import me.despical.inventoryframework.Gui;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.PaginatedPane;
 import me.ogali.xenithlibrary.XenithLibrary;
-import me.ogali.xenithlibrary.manager.RegistryManager;
 import me.ogali.xenithlibrary.menus.guiItems.ConditionListGuiItem;
 import me.ogali.xenithlibrary.registiry.impl.ConditionRegistry;
 import me.ogali.xenithlibrary.utilities.Chat;
@@ -15,19 +14,14 @@ import java.util.List;
 
 public class ConditionListMenu {
 
-    private final RegistryManager registryManager;
-
-    public ConditionListMenu(RegistryManager registryManager) {
-        this.registryManager = registryManager;
-    }
-
-    public void show(Player player) {
+    public static void show(Player player) {
         Gui gui = new Gui(XenithLibrary.getInstance(), 4, Chat.colorize("&8Server Conditions"));
         PaginatedPane pgPane = new PaginatedPane(0, 0, 9, 4);
         gui.setOnGlobalClick(inventoryClickEvent -> inventoryClickEvent.setCancelled(true));
 
         List<GuiItem> guiItems = new ArrayList<>();
-        ConditionRegistry conditionRegistry = registryManager.getRegistry(ConditionRegistry.class);
+        ConditionRegistry conditionRegistry = XenithLibrary.getInstance().getRegistryManager()
+                .getRegistry(ConditionRegistry.class);
         conditionRegistry.getObjectMap().values()
                 .forEach(abstractCondition -> guiItems.add(new ConditionListGuiItem(abstractCondition)));
 

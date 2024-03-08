@@ -5,8 +5,12 @@ import org.bukkit.entity.LivingEntity;
 
 public abstract class AbstractPlayerAction<V> extends AbstractAction<LivingEntity, V> {
 
-    public AbstractPlayerAction(String id, V value) {
-        super(id, value);
+    public AbstractPlayerAction(String id, V value, double chance) {
+        super(id, value, chance);
+    }
+
+    public AbstractPlayerAction(String id) {
+        super(id);
     }
 
 }

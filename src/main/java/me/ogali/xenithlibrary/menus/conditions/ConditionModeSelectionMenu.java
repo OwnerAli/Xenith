@@ -11,7 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.entity.Player;
 
-public class ConditionPreCreateMenu {
+public class ConditionModeSelectionMenu {
 
     public void show(Player player, String id) {
         Gui gui = new Gui(XenithLibrary.getInstance(), 1, Chat.colorize("&8Select An Option"));
@@ -22,14 +22,14 @@ public class ConditionPreCreateMenu {
                 inventoryClickEvent -> {
                     player.playNote(player.getLocation(), Instrument.FLUTE,
                             Note.natural(0, Note.Tone.E));
-                    new ConditionPreCreateSettingsMenu().show(player, id, true);
+                    new ConditionCreateMenu(XenithLibrary.getInstance().getRegistryManager()).show(player, id, false);
                 }), 0, 0);
 
         staticPane.addItem(new GuiItem(new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setName("&c&lIF NOT").build(),
                 inventoryClickEvent -> {
                     player.playNote(player.getLocation(), Instrument.FLUTE,
                             Note.natural(0, Note.Tone.G));
-                    new ConditionPreCreateSettingsMenu().show(player, id, false);
+                    new ConditionCreateMenu(XenithLibrary.getInstance().getRegistryManager()).show(player, id, true);
                 }), 1, 0);
 
         gui.addPane(staticPane);

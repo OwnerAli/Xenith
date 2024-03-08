@@ -1,6 +1,7 @@
 package me.ogali.xenithlibrary.utilities;
 
 import me.ogali.xenithlibrary.XenithLibrary;
+import me.ogali.xenithlibrary.action.domain.AbstractAction;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -72,6 +73,20 @@ public class Chat {
         for (int i = 0; i < strings.size(); i++) {
             sb.append(strings.get(i));
             if (i != strings.size() - 1) {
+                sb.append(d);
+            }
+        }
+        return sb.toString();
+    }
+
+    public static String actionListToString(List<AbstractAction<?, ?>> actionList) {
+        String d = ", ";
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < actionList.size(); i++) {
+            sb.append(actionList.get(i).getId());
+            if (i != actionList.size() - 1) {
                 sb.append(d);
             }
         }

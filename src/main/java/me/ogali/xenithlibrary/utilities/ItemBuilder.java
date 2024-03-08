@@ -15,7 +15,7 @@ import java.util.*;
 public class ItemBuilder {
 
     private final ItemStack item;
-    private final Material material;
+    private Material material;
     private int amount;
     private final ItemMeta meta;
     private List<String> lore = new ArrayList<>();
@@ -42,6 +42,12 @@ public class ItemBuilder {
         if (item.getItemMeta() != null && item.getItemMeta().getLore() != null) {
             lore.addAll(item.getItemMeta().getLore());
         }
+    }
+
+    public ItemBuilder setMaterial(Material material) {
+        item.setType(material);
+        this.material = material;
+        return this;
     }
 
     public ItemBuilder setName(String name) {

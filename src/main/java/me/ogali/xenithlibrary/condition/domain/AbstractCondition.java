@@ -5,12 +5,11 @@ import lombok.Setter;
 import me.ogali.xenithlibrary.action.domain.AbstractAction;
 import me.ogali.xenithlibrary.action.domain.impl.AbstractPlayerAction;
 import me.ogali.xenithlibrary.action.domain.impl.impl.CancellableTypeAction;
+import me.ogali.xenithlibrary.holder.impl.ActionHolder;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -18,19 +17,19 @@ import java.util.List;
 public abstract class AbstractCondition<K, V> implements Condition<K> {
 
     private final String id;
-    private final int priority;
-    private final boolean negate;
+    private int priority;
+    private boolean negate;
     private V value;
 
-    private final List<AbstractAction<?, ?>> conditionPassActionList;
-    private final List<AbstractAction<?, ?>> conditionFailActionList;
+    private final ActionHolder passActionHolder;
+    private final ActionHolder failActionHolder;
 
     protected AbstractCondition(String id, int priority, boolean negate) {
         this.id = id;
         this.priority = priority;
         this.negate = negate;
-        this.conditionPassActionList = new ArrayList<>();
-        this.conditionFailActionList = new ArrayList<>();
+        this.passActionHolder = new ActionHolder();
+        this.failActionHolder = new ActionHolder();
     }
 
     protected AbstractCondition(String id, int priority, boolean negate, V value) {
@@ -38,26 +37,8 @@ public abstract class AbstractCondition<K, V> implements Condition<K> {
         this.priority = priority;
         this.negate = negate;
         this.value = value;
-        this.conditionPassActionList = new ArrayList<>();
-        this.conditionFailActionList = new ArrayList<>();
-    }
-
-    public void executePassActions(Player player, Object... values) {
-        executePlayerActions(player, conditionPassActionList);
-        for (Object value : values) {
-            if (value instanceof Cancellable cancellable) {
-                executeCancellableActions(cancellable, conditionPassActionList);
-            }
-        }
-    }
-
-    public void executeFailActions(Player player, Object... values) {
-        executePlayerActions(player, conditionFailActionList);
-        for (Object value : values) {
-            if (value instanceof Cancellable cancellable) {
-                executeCancellableActions(cancellable, conditionFailActionList);
-            }
-        }
+        this.passActionHolder = new ActionHolder();
+        this.failActionHolder = new ActionHolder();
     }
 
     public abstract String getType();

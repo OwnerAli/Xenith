@@ -2,8 +2,10 @@ package me.ogali.xenithlibrary.condition.impl.impl;
 
 import me.ogali.xenithlibrary.condition.impl.ItemStackCondition;
 import me.ogali.xenithlibrary.utilities.Chat;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ItemLoreMatchCondition extends ItemStackCondition<List<String>> {
 
@@ -20,14 +22,12 @@ public class ItemLoreMatchCondition extends ItemStackCondition<List<String>> {
         return "itemLoreMatch";
     }
 
-//    @Override
-//    public boolean evaluateCondition(ItemStack input, Player player) {
-//        if (input.getItemMeta() == null) return false;
-//        if (input.getItemMeta().getLore() == null) return false;
-//        if (Objects.equals(input.getItemMeta().getLore(), getValue()) == isNegate()) return false;
-//        executeActions(player);
-//        return true;
-//    }
+    @Override
+    public boolean evaluate(ItemStack input) {
+        if (input.getItemMeta() == null) return false;
+        if (input.getItemMeta().getLore() == null) return false;
+        return Objects.equals(input.getItemMeta().getLore(), getValue()) != isNegate();
+    }
 
     @Override
     public String getDisplayText() {

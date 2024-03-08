@@ -2,6 +2,12 @@ package me.ogali.xenithlibrary.action.domain;
 
 public interface Executable<T> {
 
-    void execute(T type);
+    default T executeAndReturn(T type) {
+        return null;
+    }
+
+    default void execute(T type) {
+
+    }
 
 }

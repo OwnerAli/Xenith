@@ -1,5 +1,7 @@
 package me.ogali.xenithlibrary.condition.impl.impl;
 
+import org.bukkit.inventory.ItemStack;
+
 public class ItemNameCondition extends StringMatchItemCondition {
 
     public ItemNameCondition(String id, int priority, boolean negate) {
@@ -10,4 +12,10 @@ public class ItemNameCondition extends StringMatchItemCondition {
         super(id, priority, negate, value);
     }
 
+    @Override
+    public boolean evaluate(ItemStack input) {
+        if (input.getItemMeta() == null) return false;
+        if (!input.getItemMeta().hasDisplayName()) return false;
+        return input.getItemMeta().getDisplayName().equalsIgnoreCase(getValue()) != isNegate();
+    }
 }

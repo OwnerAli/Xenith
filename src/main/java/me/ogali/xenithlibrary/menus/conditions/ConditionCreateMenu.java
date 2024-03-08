@@ -22,15 +22,15 @@ public class ConditionCreateMenu {
         this.registryManager = registryManager;
     }
 
-    public void show(Player player, String id, int priority, boolean negate) {
+    public void show(Player player, String id, boolean negate) {
         Gui gui = new Gui(XenithLibrary.getInstance(), 4, Chat.colorize("&8Pick a Condition Type"));
         PaginatedPane pgPane = new PaginatedPane(0, 0, 9, 4);
 
         ConditionRegistry conditionRegistry = registryManager.getRegistry(ConditionRegistry.class);
-        List<Class<? extends AbstractCondition<?, ?>>> conditionTypes = conditionRegistry.getConditionTypes();
+        List<Class<? extends AbstractCondition<?, ?>>> conditionTypes = conditionRegistry.getConditionTypesList();
         List<GuiItem> guiItems = new ArrayList<>();
 
-        conditionTypes.forEach(abstractConditionClass -> guiItems.add(new ConditionCreateListGuiItem(abstractConditionClass, id, priority, negate)));
+        conditionTypes.forEach(abstractConditionClass -> guiItems.add(new ConditionCreateListGuiItem(abstractConditionClass, id, negate)));
 
         pgPane.populateWithGuiItems(guiItems);
         gui.addPane(pgPane);

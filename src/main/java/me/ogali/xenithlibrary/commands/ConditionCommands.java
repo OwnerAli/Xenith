@@ -7,7 +7,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import me.ogali.xenithlibrary.manager.RegistryManager;
 import me.ogali.xenithlibrary.menus.conditions.ConditionListMenu;
-import me.ogali.xenithlibrary.menus.conditions.ConditionPreCreateMenu;
+import me.ogali.xenithlibrary.menus.conditions.ConditionModeSelectionMenu;
 import me.ogali.xenithlibrary.registiry.impl.ConditionRegistry;
 import me.ogali.xenithlibrary.utilities.Chat;
 import org.bukkit.entity.Player;
@@ -30,13 +30,13 @@ public class ConditionCommands extends BaseCommand {
                 .get(id)
                 .ifPresentOrElse(abstractCondition ->
                                 Chat.tellFormatted(player, "&cA condition with id %s, already exists.", id),
-                        () -> new ConditionPreCreateMenu().show(player, id));
+                        () -> new ConditionModeSelectionMenu().show(player, id));
     }
 
     @Subcommand("list")
     @CommandPermission("zenith.condition.list")
     public void onConditionList(Player player) {
-        new ConditionListMenu(registryManager).show(player);
+        ConditionListMenu.show(player);
     }
 
 }

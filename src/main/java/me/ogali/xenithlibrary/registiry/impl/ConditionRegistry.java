@@ -18,6 +18,11 @@ public class ConditionRegistry extends AbstractMapRegistry<String, AbstractCondi
         getObjectMap().put(abstractCondition.getId(), abstractCondition);
     }
 
+    @Override
+    public void saveToFile() {
+        getObjectMap().values().forEach(AbstractCondition::saveToFile);
+    }
+
     /**
      * Retrieves a collection of all registered AbstractConditions.
      *

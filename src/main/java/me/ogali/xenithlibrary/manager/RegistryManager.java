@@ -22,4 +22,8 @@ public class RegistryManager {
         return (T) registryMap.get(registryClass);
     }
 
+    public void saveAllRegistries() {
+        registryMap.values().forEach(Registry::saveToFile);
+    }
+
 }

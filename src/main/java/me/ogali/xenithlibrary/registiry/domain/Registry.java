@@ -26,6 +26,12 @@ public interface Registry<K, V> {
     default void register(K key, V object) {}
 
     /**
+     * Saves all data in a registry map to a json file
+     *
+     */
+    default void saveToFile() {}
+
+    /**
      * Unregisters a value from the registry using its key.
      *
      * @param key The key of the value to be unregistered.

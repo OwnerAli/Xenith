@@ -2,15 +2,10 @@ package me.ogali.xenithlibrary.condition.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.ogali.xenithlibrary.action.domain.AbstractAction;
-import me.ogali.xenithlibrary.action.domain.impl.AbstractPlayerAction;
-import me.ogali.xenithlibrary.action.domain.impl.impl.CancellableTypeAction;
+import me.ogali.xenithlibrary.XenithLibrary;
+import me.ogali.xenithlibrary.files.impl.ConditionsFile;
 import me.ogali.xenithlibrary.holder.impl.ActionHolder;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.Cancellable;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -45,6 +40,11 @@ public abstract class AbstractCondition<K, V> implements Condition<K> {
 
     public abstract String getDisplayText();
 
+    public void saveToFile() {
+        ConditionsFile file = XenithLibrary.getInstance().getConditionsFile();
+        file.set(id + ".", toString());
+    }
+
     @Override
     public boolean isNegate() {
         return negate;
@@ -55,20 +55,9 @@ public abstract class AbstractCondition<K, V> implements Condition<K> {
         return Integer.compare(o.getPriority(), getPriority());
     }
 
-    private void executePlayerActions(LivingEntity livingEntity, List<AbstractAction<?, ?>> actionsList) {
-        actionsList.forEach(abstractAction -> {
-            if (abstractAction instanceof AbstractPlayerAction<?> abstractPlayerAction) {
-                abstractPlayerAction.execute(livingEntity);
-            }
-        });
-    }
-
-    private void executeCancellableActions(Cancellable cancellable, List<AbstractAction<?, ?>> actionsList) {
-        actionsList.forEach(abstractAction -> {
-            if (abstractAction instanceof CancellableTypeAction cancellableTypeAction) {
-                cancellableTypeAction.execute(cancellable);
-            }
-        });
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " " + (isNegate() ? getPriority() + " != " + getValue() : getPriority() + " == " + getValue());
     }
 
 }

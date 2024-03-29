@@ -8,6 +8,8 @@ import me.ogali.xenithlibrary.action.domain.Executable;
 import me.ogali.xenithlibrary.commands.ConditionCommands;
 import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
 import me.ogali.xenithlibrary.condition.domain.Condition;
+import me.ogali.xenithlibrary.files.impl.ActionsFile;
+import me.ogali.xenithlibrary.files.impl.ConditionsFile;
 import me.ogali.xenithlibrary.manager.RegistryManager;
 import me.ogali.xenithlibrary.prompt.listeners.PlayerChatListener;
 import me.ogali.xenithlibrary.registiry.domain.Registry;
@@ -29,6 +31,10 @@ public final class XenithLibrary extends JavaPlugin {
     private static XenithLibrary instance;
     @Getter
     private RegistryManager registryManager;
+    @Getter
+    private ConditionsFile conditionsFile;
+    @Getter
+    private ActionsFile actionsFile;
 
     @Getter
     private Random random;
@@ -37,11 +43,27 @@ public final class XenithLibrary extends JavaPlugin {
     public void onEnable() {
         instance = this;
         random = new Random();
+        initializeFiles();
         initializeRegistries(getClass().getPackageName());
         registerConditionTypes(getClass().getPackageName());
         registerActionTypes(getClass().getPackageName());
         registerListeners();
         registerCommands();
+        loadConditions();
+    }
+
+    @Override
+    public void onDisable() {
+        registryManager.saveAllRegistries();
+    }
+
+    private void loadConditions() {
+        conditionsFile.load();
+    }
+
+    private void initializeFiles() {
+        conditionsFile = new ConditionsFile();
+        actionsFile = new ActionsFile();
     }
 
     private void initializeRegistries(String packageName) {
@@ -75,7 +97,6 @@ public final class XenithLibrary extends JavaPlugin {
             actionRegistry.registerActionType(((Class<? extends AbstractAction<?, ?>>) abstractActionClass));
         }
     }
-
 
     private void registerListeners() {
         Bukkit.getPluginManager().registerEvents(new PlayerChatListener(registryManager

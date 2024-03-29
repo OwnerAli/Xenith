@@ -17,6 +17,11 @@ public class ActionRegistry extends AbstractMapRegistry<String, AbstractAction<?
         getObjectMap().put(object.getId(), object);
     }
 
+    @Override
+    public void saveToFile() {
+
+    }
+
     public void registerActionType(Class<? extends AbstractAction<?, ?>> abstractActionClass) {
         actionTypesList.add(abstractActionClass);
     }

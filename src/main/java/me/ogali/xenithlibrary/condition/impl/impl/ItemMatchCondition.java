@@ -2,7 +2,10 @@ package me.ogali.xenithlibrary.condition.impl.impl;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.condition.impl.ItemStackCondition;
+import me.ogali.xenithlibrary.files.impl.ConditionsFile;
+import me.ogali.xenithlibrary.utilities.Serialization;
 import org.bukkit.inventory.ItemStack;
 
 @Getter
@@ -18,6 +21,17 @@ public class ItemMatchCondition extends ItemStackCondition<ItemStack> {
     public ItemMatchCondition(String id, int priority, boolean negate, ItemStack value) {
         super(id, priority, negate, value);
         this.value = value;
+    }
+
+    public void saveToFile() {
+        ConditionsFile file = XenithLibrary.getInstance().getConditionsFile();
+        file.set(getId() + ".", toString());
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " " + (isNegate() ? getPriority() + " != " + Serialization.serialize(getValue()) : getPriority()
+                + " == " + Serialization.serialize(getValue()));
     }
 
 }

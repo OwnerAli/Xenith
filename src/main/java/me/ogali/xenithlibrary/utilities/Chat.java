@@ -2,9 +2,12 @@ package me.ogali.xenithlibrary.utilities;
 
 import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.action.domain.AbstractAction;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,10 @@ public class Chat {
 
     public static void tell(CommandSender toWhom, String message) {
         toWhom.sendMessage(colorize(message));
+    }
+
+    public static void tellActionBar(Player player, String message) {
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(colorize(message)));
     }
 
     public static void tellFormatted(CommandSender toWhom, String message, Object... args) {

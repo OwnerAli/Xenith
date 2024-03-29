@@ -25,7 +25,9 @@ public class ItemMatchCondition extends ItemStackCondition<ItemStack> {
 
     public void saveToFile() {
         ConditionsFile file = XenithLibrary.getInstance().getConditionsFile();
-        file.set(getId() + ".", toString());
+        file.set(getId() + ".condition", toString());
+        file.set(getId() + ".passActions", getPassActionHolder().toIdList());
+        file.set(getId() + ".failActions", getFailActionHolder().toIdList());
     }
 
     @Override

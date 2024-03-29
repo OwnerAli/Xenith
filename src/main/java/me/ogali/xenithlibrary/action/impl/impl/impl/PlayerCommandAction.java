@@ -1,6 +1,6 @@
-package me.ogali.xenithlibrary.action.domain.impl.impl.impl;
+package me.ogali.xenithlibrary.action.impl.impl.impl;
 
-import me.ogali.xenithlibrary.action.domain.impl.impl.StringValuePlayerAction;
+import me.ogali.xenithlibrary.action.impl.impl.StringValuePlayerAction;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 

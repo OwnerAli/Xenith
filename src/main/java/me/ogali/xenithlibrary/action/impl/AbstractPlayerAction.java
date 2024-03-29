@@ -1,4 +1,4 @@
-package me.ogali.xenithlibrary.action.domain.impl;
+package me.ogali.xenithlibrary.action.impl;
 
 import me.ogali.xenithlibrary.action.domain.AbstractAction;
 import org.bukkit.entity.LivingEntity;

@@ -2,7 +2,7 @@ package me.ogali.xenithlibrary.menus.guiItems;
 
 import me.despical.inventoryframework.GuiItem;
 import me.ogali.xenithlibrary.action.domain.AbstractAction;
-import me.ogali.xenithlibrary.action.domain.impl.impl.StringValuePlayerAction;
+import me.ogali.xenithlibrary.action.impl.impl.StringValuePlayerAction;
 import me.ogali.xenithlibrary.prompt.impl.impl.DoubleValueActionPrompt;
 import me.ogali.xenithlibrary.prompt.impl.impl.StringValueActionPrompt;
 import me.ogali.xenithlibrary.utilities.Chat;

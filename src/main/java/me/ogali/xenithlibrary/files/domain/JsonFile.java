@@ -8,8 +8,6 @@ public abstract class JsonFile<T> extends Json {
         super(name, "plugins/" + directory);
     }
 
-    public abstract void save(T object);
-
     public abstract void load();
 
 }

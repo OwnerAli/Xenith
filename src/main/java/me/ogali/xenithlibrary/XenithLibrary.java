@@ -43,22 +43,19 @@ public final class XenithLibrary extends JavaPlugin {
     public void onEnable() {
         instance = this;
         random = new Random();
+
         initializeFiles();
         initializeRegistries(getClass().getPackageName());
         registerConditionTypes(getClass().getPackageName());
         registerActionTypes(getClass().getPackageName());
+        loadDataFromFiles();
         registerListeners();
         registerCommands();
-        loadConditions();
     }
 
     @Override
     public void onDisable() {
         registryManager.saveAllRegistries();
-    }
-
-    private void loadConditions() {
-        conditionsFile.load();
     }
 
     private void initializeFiles() {
@@ -108,6 +105,11 @@ public final class XenithLibrary extends JavaPlugin {
 
         cm.setFormat(MessageType.SYNTAX, ChatColor.RED, ChatColor.RED);
         cm.registerCommand(new ConditionCommands(registryManager));
+    }
+
+    private void loadDataFromFiles() {
+        actionsFile.load();
+        conditionsFile.load();
     }
 
 }

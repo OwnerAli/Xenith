@@ -42,7 +42,9 @@ public abstract class AbstractCondition<K, V> implements Condition<K> {
 
     public void saveToFile() {
         ConditionsFile file = XenithLibrary.getInstance().getConditionsFile();
-        file.set(id + ".", toString());
+        file.set(id + ".condition", toString());
+        file.set(id + ".passActions", passActionHolder.toIdList());
+        file.set(id + ".failActions", failActionHolder.toIdList());
     }
 
     @Override

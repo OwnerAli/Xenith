@@ -2,33 +2,19 @@ package me.ogali.xenithlibrary.files.impl;
 
 import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
-import me.ogali.xenithlibrary.condition.impl.ItemStackCondition;
+import me.ogali.xenithlibrary.registiry.impl.ActionRegistry;
 import me.ogali.xenithlibrary.registiry.impl.ConditionRegistry;
 import me.ogali.xenithlibrary.utilities.Serialization;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 public class ConditionsFile extends XenithJsonFile<AbstractCondition<?, ?>> {
 
     public ConditionsFile() {
         super("conditions");
-    }
-
-    public void save(AbstractCondition<?, ?> condition) {
-        String id = condition.getId();
-
-        set(id + ".type", condition.getType());
-        set(id + ".priority", condition.getPriority());
-        set(id + ".negate", condition.isNegate());
-        if (condition instanceof ItemStackCondition<?> itemStackCondition) {
-            if (itemStackCondition.getValue() instanceof ItemStack itemStack) {
-                set(id + ".value", Serialization.serialize(itemStack));
-                return;
-            }
-        }
-        set(id + ".value", condition.getValue());
     }
 
     @Override
@@ -47,7 +33,9 @@ public class ConditionsFile extends XenithJsonFile<AbstractCondition<?, ?>> {
     }
 
     public AbstractCondition<?, ?> getCondition(String key) {
-        String[] parts = getString(key + ".").split(" ");
+        String[] parts = getString(key + ".condition").split(" ");
+        List<String> passActionIdList = getStringList(key + ".passActions");
+        List<String> failActionIdList = getStringList(key + ".failActions");
 
         String type = parts[0];
         int priority = Integer.parseInt(parts[1]);
@@ -62,10 +50,14 @@ public class ConditionsFile extends XenithJsonFile<AbstractCondition<?, ?>> {
             if (type.equals("ItemMatchCondition")) {
                 constructor = clazz.getConstructor(String.class, int.class, boolean.class, ItemStack.class);
                 condition = (AbstractCondition<?, ?>) constructor.newInstance(key, priority, negate, Serialization.deserialize(value));
+
             } else {
                 constructor = clazz.getConstructor(String.class, int.class, boolean.class, String.class);
                 condition = (AbstractCondition<?, ?>) constructor.newInstance(key, priority, negate, value);
+
             }
+            populatePassActionHolderFromIdList(passActionIdList, condition);
+            populateFailActionHolderFromIdList(failActionIdList, condition);
 
             return condition;
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
@@ -74,6 +66,26 @@ public class ConditionsFile extends XenithJsonFile<AbstractCondition<?, ?>> {
         }
 
         return null;
+    }
+
+    private void populatePassActionHolderFromIdList(List<String> idList, AbstractCondition<?, ?> condition) {
+        ActionRegistry actionRegistry = XenithLibrary.getInstance().getRegistryManager()
+                .getRegistry(ActionRegistry.class);
+
+        idList.stream()
+                .map(actionRegistry::get)
+                .forEach(optionalAction ->
+                        optionalAction.ifPresent(action -> condition.getPassActionHolder().getActionList().add(action)));
+    }
+
+    private void populateFailActionHolderFromIdList(List<String> idList, AbstractCondition<?, ?> condition) {
+        ActionRegistry actionRegistry = XenithLibrary.getInstance().getRegistryManager()
+                .getRegistry(ActionRegistry.class);
+
+        idList.stream()
+                .map(actionRegistry::get)
+                .forEach(optionalAction ->
+                        optionalAction.ifPresent(action -> condition.getFailActionHolder().getActionList().add(action)));
     }
 
 }

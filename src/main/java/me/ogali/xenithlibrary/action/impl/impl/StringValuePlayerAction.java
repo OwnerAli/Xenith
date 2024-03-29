@@ -1,8 +1,8 @@
-package me.ogali.xenithlibrary.action.domain.impl.impl;
+package me.ogali.xenithlibrary.action.impl.impl;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.ogali.xenithlibrary.action.domain.impl.AbstractPlayerAction;
+import me.ogali.xenithlibrary.action.impl.AbstractPlayerAction;
 
 @Setter
 @Getter

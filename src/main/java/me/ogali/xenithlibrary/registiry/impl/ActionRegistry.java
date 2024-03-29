@@ -19,7 +19,7 @@ public class ActionRegistry extends AbstractMapRegistry<String, AbstractAction<?
 
     @Override
     public void saveToFile() {
-
+        getObjectMap().values().forEach(AbstractAction::saveToFile);
     }
 
     public void registerActionType(Class<? extends AbstractAction<?, ?>> abstractActionClass) {

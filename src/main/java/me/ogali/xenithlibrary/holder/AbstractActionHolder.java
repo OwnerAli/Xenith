@@ -2,8 +2,8 @@ package me.ogali.xenithlibrary.holder;
 
 import lombok.Getter;
 import me.ogali.xenithlibrary.action.domain.AbstractAction;
-import me.ogali.xenithlibrary.action.domain.impl.AbstractPlayerAction;
-import me.ogali.xenithlibrary.action.domain.impl.impl.CancellableTypeAction;
+import me.ogali.xenithlibrary.action.impl.AbstractPlayerAction;
+import me.ogali.xenithlibrary.action.impl.impl.CancellableTypeAction;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
@@ -35,4 +35,9 @@ public abstract class AbstractActionHolder implements IActionHolder {
             }
         });
     }
+
+    public List<String> toIdList() {
+        return actionList.stream().map(AbstractAction::getId).toList();
+    }
+
 }

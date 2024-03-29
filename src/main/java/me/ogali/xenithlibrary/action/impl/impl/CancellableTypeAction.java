@@ -1,4 +1,4 @@
-package me.ogali.xenithlibrary.action.domain.impl.impl;
+package me.ogali.xenithlibrary.action.impl.impl;
 
 import me.ogali.xenithlibrary.action.domain.AbstractAction;
 import org.bukkit.event.Cancellable;

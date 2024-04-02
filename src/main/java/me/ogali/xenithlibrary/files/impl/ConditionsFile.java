@@ -6,6 +6,7 @@ import me.ogali.xenithlibrary.registiry.impl.ActionRegistry;
 import me.ogali.xenithlibrary.registiry.impl.ConditionRegistry;
 import me.ogali.xenithlibrary.utilities.Serialization;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -23,8 +24,8 @@ public class ConditionsFile extends XenithJsonFile<AbstractCondition<?, ?>> {
                 .getRegistry(ConditionRegistry.class);
 
         singleLayerKeySet().forEach(key -> {
-            AbstractCondition<?, ?> condition = getCondition(key);
-            conditionRegistry.register(condition);
+            if (!(key.contains(XenithLibrary.getInstance().getName()))) return;
+            conditionRegistry.register(getCondition(key));
         });
     }
 
@@ -33,6 +34,11 @@ public class ConditionsFile extends XenithJsonFile<AbstractCondition<?, ?>> {
     }
 
     public AbstractCondition<?, ?> getCondition(String key) {
+        return getAbstractCondition(key);
+    }
+
+    @Nullable
+    private AbstractCondition<?, ?> getAbstractCondition(String key) {
         String[] parts = getString(key + ".condition").split(" ");
         List<String> passActionIdList = getStringList(key + ".passActions");
         List<String> failActionIdList = getStringList(key + ".failActions");
@@ -43,18 +49,16 @@ public class ConditionsFile extends XenithJsonFile<AbstractCondition<?, ?>> {
         String value = parts[3];
 
         try {
-            Class<?> clazz = Class.forName("me.ogali.xenithlibrary.condition.impl.impl." + type);
+            Class<?> clazz = Class.forName(type);
             Constructor<?> constructor;
             AbstractCondition<?, ?> condition;
 
             if (type.equals("ItemMatchCondition")) {
                 constructor = clazz.getConstructor(String.class, int.class, boolean.class, ItemStack.class);
                 condition = (AbstractCondition<?, ?>) constructor.newInstance(key, priority, negate, Serialization.deserialize(value));
-
             } else {
                 constructor = clazz.getConstructor(String.class, int.class, boolean.class, String.class);
                 condition = (AbstractCondition<?, ?>) constructor.newInstance(key, priority, negate, value);
-
             }
             populatePassActionHolderFromIdList(passActionIdList, condition);
             populateFailActionHolderFromIdList(failActionIdList, condition);

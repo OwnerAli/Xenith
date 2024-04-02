@@ -2,8 +2,6 @@ package me.ogali.xenithlibrary.condition.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.ogali.xenithlibrary.XenithLibrary;
-import me.ogali.xenithlibrary.files.impl.ConditionsFile;
 import me.ogali.xenithlibrary.holder.impl.ActionHolder;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,13 +38,6 @@ public abstract class AbstractCondition<K, V> implements Condition<K> {
 
     public abstract String getDisplayText();
 
-    public void saveToFile() {
-        ConditionsFile file = XenithLibrary.getInstance().getConditionsFile();
-        file.set(id + ".condition", toString());
-        file.set(id + ".passActions", passActionHolder.toIdList());
-        file.set(id + ".failActions", failActionHolder.toIdList());
-    }
-
     @Override
     public boolean isNegate() {
         return negate;
@@ -59,7 +50,10 @@ public abstract class AbstractCondition<K, V> implements Condition<K> {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " " + (isNegate() ? getPriority() + " != " + getValue() : getPriority() + " == " + getValue());
+        return getClass().getName()
+                + " " +
+                (isNegate() ? getPriority() + " != " + getValue() :
+                        getPriority() + " == " + getValue());
     }
 
 }

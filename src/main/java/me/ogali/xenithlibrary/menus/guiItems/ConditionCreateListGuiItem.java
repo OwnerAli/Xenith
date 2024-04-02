@@ -4,7 +4,6 @@ import me.despical.inventoryframework.GuiItem;
 import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
 import me.ogali.xenithlibrary.condition.impl.ItemStackCondition;
 import me.ogali.xenithlibrary.condition.impl.LocationCondition;
-import me.ogali.xenithlibrary.condition.impl.impl.BiomeCondition;
 import me.ogali.xenithlibrary.condition.impl.impl.*;
 import me.ogali.xenithlibrary.menus.conditions.ItemInputConditionMenu;
 import me.ogali.xenithlibrary.menus.displayItems.ConditionCreateListItem;

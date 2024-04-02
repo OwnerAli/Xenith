@@ -33,7 +33,8 @@ public abstract class ItemStackCondition<T> extends AbstractCondition<ItemStack,
 
     @Override
     public boolean evaluate(ItemStack input) {
-        return false;
+        return input.equals(value) != isNegate();
     }
+
 
 }

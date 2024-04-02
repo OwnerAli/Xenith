@@ -1,5 +1,7 @@
 package me.ogali.xenithlibrary.registiry.domain;
 
+import de.leonhard.storage.Json;
+
 import java.util.Optional;
 
 /**
@@ -26,10 +28,16 @@ public interface Registry<K, V> {
     default void register(K key, V object) {}
 
     /**
-     * Saves all data in a registry map to a json file
+     * Saves all data in the registry map to a json file
      *
      */
     default void saveToFile() {}
+
+    /**
+     * Loads all data from a file to the registry map
+     *
+     */
+    default void loadFromFile(Json file) {}
 
     /**
      * Unregisters a value from the registry using its key.

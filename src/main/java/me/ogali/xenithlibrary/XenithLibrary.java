@@ -105,11 +105,15 @@ public final class XenithLibrary extends JavaPlugin {
 
         cm.setFormat(MessageType.SYNTAX, ChatColor.RED, ChatColor.RED);
         cm.registerCommand(new ConditionCommands(registryManager));
+        cm.getCommandCompletions().registerCompletion("conditions", c -> registryManager.getRegistry(ConditionRegistry.class)
+                .getRegisteredConditions().stream().map(AbstractCondition::getId).toList());
+        cm.getCommandCompletions().registerCompletion("actions", c -> registryManager.getRegistry(ActionRegistry.class)
+                .getObjectMap().values().stream().map(AbstractAction::getId).toList());
     }
 
     private void loadDataFromFiles() {
-        actionsFile.load();
-        conditionsFile.load();
+        registryManager.getRegistry(ActionRegistry.class).loadFromFile(actionsFile);
+        registryManager.getRegistry(ConditionRegistry.class).loadFromFile(conditionsFile);
     }
 
 }

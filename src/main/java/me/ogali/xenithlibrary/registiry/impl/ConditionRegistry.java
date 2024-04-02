@@ -1,7 +1,10 @@
 package me.ogali.xenithlibrary.registiry.impl;
 
+import de.leonhard.storage.Json;
 import lombok.Getter;
+import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
+import me.ogali.xenithlibrary.files.impl.ConditionsFile;
 import me.ogali.xenithlibrary.registiry.domain.impl.AbstractMapRegistry;
 
 import java.util.ArrayList;
@@ -20,7 +23,22 @@ public class ConditionRegistry extends AbstractMapRegistry<String, AbstractCondi
 
     @Override
     public void saveToFile() {
-        getObjectMap().values().forEach(AbstractCondition::saveToFile);
+        ConditionsFile conditionsFile = XenithLibrary.getInstance().getConditionsFile();
+
+        getObjectMap().forEach((id, condition) -> {
+            conditionsFile.setPathPrefix(id);
+            conditionsFile.set("condition", condition);
+            conditionsFile.set("passActions", condition.getPassActionHolder().toIdList());
+            conditionsFile.set("failActions", condition.getFailActionHolder().toIdList());
+        });
+    }
+
+    @Override
+    public void loadFromFile(Json file) {
+        if (!(file instanceof ConditionsFile conditionsFile)) return;
+
+        file.singleLayerKeySet()
+                .forEach(key -> register(conditionsFile.getCondition(key)));
     }
 
     /**

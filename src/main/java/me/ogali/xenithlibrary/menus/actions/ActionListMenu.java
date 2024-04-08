@@ -3,6 +3,7 @@ package me.ogali.xenithlibrary.menus.actions;
 import me.despical.inventoryframework.Gui;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.PaginatedPane;
+import me.despical.inventoryframework.pane.StaticPane;
 import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.holder.impl.ActionHolder;
 import me.ogali.xenithlibrary.menus.displayItems.BackButton;
@@ -20,7 +21,7 @@ public class ActionListMenu {
 
     public static void show(Player player) {
         Gui gui = new Gui(XenithLibrary.getInstance(), 6, Chat.colorize("&8Server Actions"));
-        TopAndBottomSixPane pane = new TopAndBottomSixPane();
+        TopAndBottomSixPane staticPane = new TopAndBottomSixPane();
         PaginatedPane pgPane = new PaginatedPane(0, 1, 9, 4);
 
         List<GuiItem> actionListItems = new ArrayList<>();
@@ -30,7 +31,7 @@ public class ActionListMenu {
                 .values()
                 .forEach(action -> actionListItems.add(new ActionEditListItem(action)));
 
-        populateAndShowMenu(player, gui, pane, pgPane, actionListItems);
+        populateAndShowMenu(player, gui, staticPane, pgPane, actionListItems);
     }
 
     public static void show(Player player, ActionHolder actionHolder) {
@@ -43,9 +44,9 @@ public class ActionListMenu {
 
     private static void setupMenu(Player player, ActionHolder actionHolder) {
         Gui gui = new Gui(XenithLibrary.getInstance(), 6, Chat.colorize("&8Server Actions"));
-        TopAndBottomSixPane pane = new TopAndBottomSixPane();
+        TopAndBottomSixPane staticPane = new TopAndBottomSixPane();
         PaginatedPane pgPane = new PaginatedPane(0, 1, 9, 4);
-        gui.setOnGlobalClick(click -> click.setCancelled(true));
+        gui.setOnTopClick(inventoryClickEvent -> inventoryClickEvent.setCancelled(true));
 
         List<GuiItem> actionListItems = new ArrayList<>();
         ActionRegistry actionRegistry = XenithLibrary.getInstance().getRegistryManager()
@@ -55,7 +56,7 @@ public class ActionListMenu {
                 .values()
                 .forEach(action -> actionListItems.add(new ActionEditListItem(action, actionHolder)));
 
-        populateAndShowMenu(player, gui, pane, pgPane, actionListItems);
+        populateAndShowMenu(player, gui, staticPane, pgPane, actionListItems);
     }
 
     private static void populateAndShowMenu(Player player, Gui gui, TopAndBottomSixPane pane, PaginatedPane pgPane, List<GuiItem> actionListItems) {

@@ -22,6 +22,11 @@ public class ItemMatchCondition extends ItemStackCondition<ItemStack> {
     }
 
     @Override
+    public boolean evaluate(ItemStack input) {
+        return input.equals(value) != isNegate();
+    }
+
+    @Override
     public String toString() {
         return getClass().getSimpleName() + " " + (isNegate() ? getPriority() + " != " + Serialization.serialize(getValue()) : getPriority()
                 + " == " + Serialization.serialize(getValue()));

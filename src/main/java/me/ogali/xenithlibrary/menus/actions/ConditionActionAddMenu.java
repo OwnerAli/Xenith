@@ -11,6 +11,7 @@ import me.ogali.xenithlibrary.menus.conditions.ConditionSettingsMenu;
 import me.ogali.xenithlibrary.menus.displayItems.BackButton;
 import me.ogali.xenithlibrary.menus.displayItems.NavigationButton;
 import me.ogali.xenithlibrary.menus.guiItems.ActionAddToConditionItem;
+import me.ogali.xenithlibrary.menus.panes.TopAndBottomSixPane;
 import me.ogali.xenithlibrary.registiry.impl.ActionRegistry;
 import me.ogali.xenithlibrary.utilities.Chat;
 import org.bukkit.entity.Player;
@@ -21,9 +22,10 @@ import java.util.List;
 public class ConditionActionAddMenu {
 
     public void show(Player player, AbstractCondition<?, ?> condition, boolean addToPassList) {
-        Gui gui = new Gui(XenithLibrary.getInstance(), 4, Chat.colorize("&8Pick an Action Type"));
-        StaticPane pane = new StaticPane(0, 0, 9, 4);
-        PaginatedPane pgPane = new PaginatedPane(0, 0, 9, 4);
+        Gui gui = new Gui(XenithLibrary.getInstance(), 6, Chat.colorize("&8Pick an Action Type"));
+        StaticPane staticPane = new TopAndBottomSixPane();
+        PaginatedPane pgPane = new PaginatedPane(0, 1, 9, 4);
+        gui.setOnTopClick(inventoryClickEvent -> inventoryClickEvent.setCancelled(true));
 
         RegistryManager registryManager = XenithLibrary.getInstance().getRegistryManager();
         ActionRegistry actionRegistry = registryManager.getRegistry(ActionRegistry.class);
@@ -38,7 +40,7 @@ public class ConditionActionAddMenu {
         pgPane.populateWithGuiItems(items);
 
         if (pgPane.getPages() > 1) {
-            pane.addItem(new GuiItem(new NavigationButton("&a&lNEXT PAGE").build(), click -> {
+            staticPane.addItem(new GuiItem(new NavigationButton("&a&lNEXT PAGE").build(), click -> {
                 click.setCancelled(true);
                 if (pgPane.getPage() + 2 > pgPane.getPages()) return;
                 pgPane.setPage(pgPane.getPage() + 1);
@@ -46,7 +48,7 @@ public class ConditionActionAddMenu {
             }), 8, 5);
         }
 
-        pane.addItem(new GuiItem(new BackButton().build(), click -> {
+        staticPane.addItem(new GuiItem(new BackButton().build(), click -> {
             click.setCancelled(true);
             if (pgPane.getPage() > 0) {
                 pgPane.setPage(pgPane.getPage() - 1);
@@ -54,9 +56,9 @@ public class ConditionActionAddMenu {
                 return;
             }
             new ConditionSettingsMenu().show(player, condition);
-        }), 4, 3);
+        }), 4, 5);
 
-        gui.addPane(pane);
+        gui.addPane(staticPane);
         gui.addPane(pgPane);
         gui.show(player);
     }

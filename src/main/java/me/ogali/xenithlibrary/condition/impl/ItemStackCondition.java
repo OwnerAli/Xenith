@@ -36,5 +36,4 @@ public abstract class ItemStackCondition<T> extends AbstractCondition<ItemStack,
         return input.equals(value) != isNegate();
     }
 
-
 }

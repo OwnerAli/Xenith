@@ -42,7 +42,6 @@ public abstract class AbstractConditionHolder implements IConditionHolder {
 
         // Sort conditions from the lowest priority to highest
         List<AbstractCondition<?, ?>> sortedConditionList = conditionSet.stream().sorted(Comparator.reverseOrder()).toList();
-        sortedConditionList.forEach(condition -> Chat.tell(player, "PRIORITY: " + condition.getPriority()));
 
         // Save all failed conditions to execute their failed actions after all conditions are evaluated to be false
         List<AbstractCondition<?,?>> failedConditionsList = new ArrayList<>();

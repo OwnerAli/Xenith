@@ -5,6 +5,8 @@ import co.aikar.commands.PaperCommandManager;
 import lombok.Getter;
 import me.ogali.xenithlibrary.action.domain.AbstractAction;
 import me.ogali.xenithlibrary.action.domain.Executable;
+import me.ogali.xenithlibrary.action.impl.impl.impl.CancelEventAction;
+import me.ogali.xenithlibrary.action.impl.impl.impl.UnCancelEventAction;
 import me.ogali.xenithlibrary.commands.ConditionCommands;
 import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
 import me.ogali.xenithlibrary.condition.domain.Condition;
@@ -51,6 +53,7 @@ public final class XenithLibrary extends JavaPlugin {
         loadDataFromFiles();
         registerListeners();
         registerCommands();
+        registerActions();
     }
 
     @Override
@@ -91,6 +94,8 @@ public final class XenithLibrary extends JavaPlugin {
 
         for (Class<?> abstractActionClass : reflections.getSubTypesOf(Executable.class)) {
             if (Modifier.isAbstract(abstractActionClass.getModifiers())) continue;
+            if (abstractActionClass.getSimpleName().contains("Event")) continue;
+
             actionRegistry.registerActionType(((Class<? extends AbstractAction<?, ?>>) abstractActionClass));
         }
     }
@@ -109,6 +114,12 @@ public final class XenithLibrary extends JavaPlugin {
                 .getRegisteredConditions().stream().map(AbstractCondition::getId).toList());
         cm.getCommandCompletions().registerCompletion("actions", c -> registryManager.getRegistry(ActionRegistry.class)
                 .getObjectMap().values().stream().map(AbstractAction::getId).toList());
+    }
+
+    private void registerActions() {
+        ActionRegistry actionRegistry = registryManager.getRegistry(ActionRegistry.class);
+        actionRegistry.register(new CancelEventAction());
+        actionRegistry.register(new UnCancelEventAction());
     }
 
     private void loadDataFromFiles() {

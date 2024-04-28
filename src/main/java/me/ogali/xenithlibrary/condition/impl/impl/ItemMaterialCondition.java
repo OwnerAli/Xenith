@@ -8,6 +8,7 @@ public class ItemMaterialCondition extends StringMatchItemCondition {
 
     public ItemMaterialCondition(String id, int priority, boolean negate) {
         super(id, priority, negate);
+        setValue("RED_TERRACOTTA");
     }
     
     public ItemMaterialCondition(String id, int priority, boolean negate, String value) {

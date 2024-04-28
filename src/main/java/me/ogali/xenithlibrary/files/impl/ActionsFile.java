@@ -19,7 +19,11 @@ public class ActionsFile extends XenithJsonFile<AbstractAction<?, ?>> {
         ActionRegistry actionRegistry = XenithLibrary.getInstance().getRegistryManager()
                 .getRegistry(ActionRegistry.class);
 
-        singleLayerKeySet().forEach(key -> actionRegistry.register(getAction(key)));
+        singleLayerKeySet().forEach(key -> {
+            if (getAction(key) == null) return;
+
+            actionRegistry.register(getAction(key));
+        });
     }
 
     public AbstractAction<?, ?> getAction(String key) {
@@ -28,7 +32,7 @@ public class ActionsFile extends XenithJsonFile<AbstractAction<?, ?>> {
 
     @Nullable
     private AbstractAction<?, ?> getAbstractAction(String key) {
-        String[] parts = getString(key + ".").split(" ", 3);
+        String[] parts = getString(key + ".").split(",");
         String className = parts[0]; // Fully qualified class name
         String value = parts[1];
         double chance = Double.parseDouble(parts[2]);
@@ -46,7 +50,10 @@ public class ActionsFile extends XenithJsonFile<AbstractAction<?, ?>> {
             Class<?> secondParamType = constructor.getParameterTypes()[1];
             Object convertedValue = convertValueToRequiredType(value, secondParamType);
 
-            return (AbstractAction<?, ?>) constructor.newInstance(key, convertedValue, chance);
+            AbstractAction<?, ?> abstractAction = (AbstractAction<?, ?>) constructor.newInstance(key, convertedValue, chance);
+            abstractAction.loadExtraSettings(getString(key + ".extraSettings").split(","));
+
+            return abstractAction;
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                  InvocationTargetException | ClassNotFoundException e) {
             e.printStackTrace();

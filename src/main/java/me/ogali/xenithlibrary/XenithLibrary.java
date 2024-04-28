@@ -50,10 +50,10 @@ public final class XenithLibrary extends JavaPlugin {
         initializeRegistries(getClass().getPackageName());
         registerConditionTypes(getClass().getPackageName());
         registerActionTypes(getClass().getPackageName());
+        registerActions();
         loadDataFromFiles();
         registerListeners();
         registerCommands();
-        registerActions();
     }
 
     @Override

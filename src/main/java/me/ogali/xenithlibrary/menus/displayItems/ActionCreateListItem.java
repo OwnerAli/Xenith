@@ -13,23 +13,26 @@ public class ActionCreateListItem extends ItemBuilder {
         setName(Chat.colorize("&d" + abstractActionClassName));
     }
 
-    public ActionCreateListItem(AbstractAction<?, ?> abstractAction, AbstractCondition<?, ?> abstractCondition, boolean addToPassList) {
-        super(Material.FLINT_AND_STEEL);
-        setName("&c" + abstractAction.getId());
+    public ActionCreateListItem(AbstractAction<?, ?> action, AbstractCondition<?, ?> abstractCondition, boolean addToPassList) {
+        super(Material.LIME_DYE);
+        addLoreLines("Type: " + action.getClass().getSimpleName(),
+                "Value: " + action.getValue(), "Chance: " + action.getChance(),
+                "");
 
-        if (addToPassList && abstractCondition.getPassActionHolder().contains(abstractAction)) {
-            setName("&c" + abstractAction.getId());
+        if (addToPassList && abstractCondition.getPassActionHolder().contains(action)) {
+            setName("&c" + action.getId());
             setMaterial(Material.RED_DYE);
-            addLoreLines("", "&cClick to remove!");
+            addLoreLine("&cClick to remove!");
             return;
-        } else if (!addToPassList && abstractCondition.getFailActionHolder().contains(abstractAction)) {
-            setName("&c" + abstractAction.getId());
+        } else if (!addToPassList && abstractCondition.getFailActionHolder().contains(action)) {
+            setName("&c" + action.getId());
             setMaterial(Material.RED_DYE);
-            addLoreLines("", "&cClick to remove!");
+            addLoreLine("&cClick to remove!");
             return;
         }
 
-        addLoreLines("", "&aClick to add!");
+        setName("&a" + action.getId());
+        addLoreLine("&aClick to add!");
     }
 
 }

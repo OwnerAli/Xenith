@@ -7,6 +7,7 @@ public class ItemDurabilityCondition extends ItemStackCondition<Integer> {
 
     public ItemDurabilityCondition(String id, int priority, boolean negate) {
         super(id, priority, negate);
+        setValue(0);
     }
 
     public ItemDurabilityCondition(String id, int priority, boolean negate, Integer value) {

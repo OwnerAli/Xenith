@@ -7,11 +7,11 @@ import org.bukkit.entity.LivingEntity;
 public class PlayerMessageAction extends StringValuePlayerAction {
 
     public PlayerMessageAction(String id, String value, double chance) {
-        super(id, value, chance);
+        super(id, value, chance, false);
     }
 
     public PlayerMessageAction(String id) {
-        super(id, "", 100.0);
+        super(id, "", 100.0, false);
     }
 
     @Override

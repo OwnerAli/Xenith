@@ -3,7 +3,9 @@ package me.ogali.xenithlibrary.condition.impl.impl;
 import lombok.Getter;
 import lombok.Setter;
 import me.ogali.xenithlibrary.condition.impl.ItemStackCondition;
+import me.ogali.xenithlibrary.utilities.ItemBuilder;
 import me.ogali.xenithlibrary.utilities.Serialization;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 @Getter
@@ -14,6 +16,7 @@ public class ItemMatchCondition extends ItemStackCondition<ItemStack> {
 
     public ItemMatchCondition(String id, int priority, boolean negate) {
         super(id, priority, negate);
+        setValue(new ItemBuilder(Material.RED_TERRACOTTA).setName("&c&lCustomDrops").build());
     }
 
     public ItemMatchCondition(String id, int priority, boolean negate, ItemStack value) {

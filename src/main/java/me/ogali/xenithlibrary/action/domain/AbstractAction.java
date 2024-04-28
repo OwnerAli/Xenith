@@ -13,12 +13,24 @@ public abstract class AbstractAction<T, V> implements Executable<T> {
     private String id;
     private V value;
     private double chance;
+    private boolean extraSettings;
 
-    protected AbstractAction(String id, V value, double chance) {
+    protected AbstractAction(String id, V value, double chance, boolean extraSettings) {
         this.id = id;
         this.value = value;
         this.chance = chance;
+        this.extraSettings = extraSettings;
     }
+
+    public void saveExtraSettings() {
+    }
+
+    ;
+
+    public void loadExtraSettings(String[] settings) {
+    }
+
+    ;
 
     protected AbstractAction(String id) {
         this.id = id;
@@ -32,7 +44,8 @@ public abstract class AbstractAction<T, V> implements Executable<T> {
 
     @Override
     public String toString() {
-        return getClass().getName() + " " + getValue() + " " + chance;
+        if (getClass().getSimpleName().contains("Event")) return null;
+        return getClass().getName() + "," + getValue() + "," + chance;
     }
 
 }

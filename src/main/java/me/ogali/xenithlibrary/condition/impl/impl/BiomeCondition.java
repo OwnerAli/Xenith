@@ -13,6 +13,7 @@ public class BiomeCondition extends LocationCondition<String> {
 
     public BiomeCondition(String id, int priority, boolean negate) {
         super(id, priority, negate);
+        setValue("Plains");
     }
 
     @Override

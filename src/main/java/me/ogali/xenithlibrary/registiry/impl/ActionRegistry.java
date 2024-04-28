@@ -24,7 +24,11 @@ public class ActionRegistry extends AbstractMapRegistry<String, AbstractAction<?
     public void saveToFile() {
         ActionsFile actionsFile = XenithLibrary.getInstance().getActionsFile();
 
-        getObjectMap().forEach(actionsFile::set);
+        getObjectMap().forEach((id, action) -> {
+            if (action.toString() == null) return;
+            actionsFile.set(id, action);
+            action.saveExtraSettings();
+        });
     }
 
     @Override

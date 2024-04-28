@@ -8,6 +8,7 @@ public class ItemLoreContainsCondition extends ItemStackCondition<String> {
 
     public ItemLoreContainsCondition(String id, int priority, boolean negate) {
         super(id, priority, negate);
+        setValue("Lore");
     }
 
     public ItemLoreContainsCondition(String id, int priority, boolean negate, String value) {

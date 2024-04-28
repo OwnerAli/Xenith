@@ -4,8 +4,8 @@ import lombok.Getter;
 import me.ogali.xenithlibrary.action.domain.AbstractAction;
 import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
 import me.ogali.xenithlibrary.condition.impl.ItemStackCondition;
+import me.ogali.xenithlibrary.condition.impl.LocationCondition;
 import me.ogali.xenithlibrary.condition.impl.impl.BiomeCondition;
-import me.ogali.xenithlibrary.utilities.Chat;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -44,7 +44,7 @@ public abstract class AbstractConditionHolder implements IConditionHolder {
         List<AbstractCondition<?, ?>> sortedConditionList = conditionSet.stream().sorted(Comparator.reverseOrder()).toList();
 
         // Save all failed conditions to execute their failed actions after all conditions are evaluated to be false
-        List<AbstractCondition<?,?>> failedConditionsList = new ArrayList<>();
+        List<AbstractCondition<?, ?>> failedConditionsList = new ArrayList<>();
 
         for (AbstractCondition<?, ?> abstractCondition : sortedConditionList) {
             if (abstractCondition instanceof ItemStackCondition<?> itemStackCondition) {
@@ -55,7 +55,7 @@ public abstract class AbstractConditionHolder implements IConditionHolder {
                     return true;
                 }
                 failedConditionsList.add(abstractCondition);
-            } else if (abstractCondition instanceof BiomeCondition locationCondition) {
+            } else if (abstractCondition instanceof LocationCondition<?> locationCondition) {
                 if (location == null) continue;
                 if (locationCondition.evaluate(location)) {
                     locationCondition.getPassActionHolder().execute(player, values);

@@ -10,8 +10,8 @@ public abstract class StringValuePlayerAction extends AbstractPlayerAction<Strin
 
     private String value;
 
-    public StringValuePlayerAction(String id, String value, double chance) {
-        super(id, value, chance);
+    public StringValuePlayerAction(String id, String value, double chance, boolean hasExtraSettings) {
+        super(id, value, chance, hasExtraSettings);
         this.value = value;
     }
 

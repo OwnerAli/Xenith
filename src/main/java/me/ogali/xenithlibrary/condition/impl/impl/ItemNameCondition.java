@@ -6,6 +6,7 @@ public class ItemNameCondition extends StringMatchItemCondition {
 
     public ItemNameCondition(String id, int priority, boolean negate) {
         super(id, priority, negate);
+        setValue("Item Name");
     }
 
     public ItemNameCondition(String id, int priority, boolean negate, String value) {

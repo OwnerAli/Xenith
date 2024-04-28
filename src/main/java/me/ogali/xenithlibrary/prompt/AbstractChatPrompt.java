@@ -28,7 +28,6 @@ public abstract class AbstractChatPrompt<T> implements ChatPrompt {
         XenithLibrary.getInstance().getRegistryManager()
                 .getRegistry(ChatPromptRegistry.class)
                 .unRegister(player);
-        Chat.tell(player, "&cPrompt cancelled.");
     }
 
 }

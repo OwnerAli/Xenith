@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 @Setter
 public abstract class AbstractCondition<K, V> implements Condition<K> {
 
-    private final String id;
+    private String id;
     private int priority;
     private boolean negate;
     private V value;

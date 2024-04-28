@@ -12,13 +12,13 @@ public abstract class ItemStackCondition<T> extends AbstractCondition<ItemStack,
 
     private T value;
 
-    public ItemStackCondition(String id, int priority, boolean negate) {
-        super(id, priority, negate);
-    }
-
     public ItemStackCondition(String id, int priority, boolean negate, T value) {
         super(id, priority, negate, value);
         this.value = value;
+    }
+
+    public ItemStackCondition(String id, int priority, boolean negate) {
+        super(id, priority, negate);
     }
 
     @Override

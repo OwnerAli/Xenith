@@ -8,11 +8,11 @@ import org.bukkit.entity.Player;
 public class PlayerActionBarAction extends StringValuePlayerAction {
 
     public PlayerActionBarAction(String id, String value, double chance) {
-        super(id, value, chance);
+        super(id, value, chance, false);
     }
 
     public PlayerActionBarAction(String id) {
-        super(id, "", 100.0);
+        super(id, "", 100.0, false);
     }
 
     @Override

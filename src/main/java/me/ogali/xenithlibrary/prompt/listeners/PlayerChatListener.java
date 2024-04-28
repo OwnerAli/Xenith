@@ -1,8 +1,11 @@
 package me.ogali.xenithlibrary.prompt.listeners;
 
 import me.ogali.xenithlibrary.XenithLibrary;
+import me.ogali.xenithlibrary.menus.actions.ActionSettingsMenu;
+import me.ogali.xenithlibrary.prompt.impl.impl.settingValuePrompt;
 import me.ogali.xenithlibrary.registiry.impl.ChatPromptRegistry;
 import me.ogali.xenithlibrary.utilities.Chat;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -33,6 +36,10 @@ public class PlayerChatListener implements Listener {
                         return;
                     }
                     if (!chatPrompt.setValue(event.getMessage())) return;
+                    if (chatPrompt instanceof settingValuePrompt settingValuePrompt) {
+                        Bukkit.getScheduler().runTask(XenithLibrary.getInstance(), () ->
+                                new ActionSettingsMenu().show(player, settingValuePrompt.getType()));
+                    }
                     chatPrompt.unPrompt(player);
                 });
     }

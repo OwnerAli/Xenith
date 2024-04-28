@@ -1,10 +1,13 @@
 package me.ogali.xenithlibrary.menus.guiItems;
 
 import me.despical.inventoryframework.GuiItem;
+import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.action.domain.AbstractAction;
+import me.ogali.xenithlibrary.menus.actions.ActionSettingsMenu;
 import me.ogali.xenithlibrary.menus.displayItems.ActionCreateListItem;
 import me.ogali.xenithlibrary.prompt.impl.impl.DoubleValueActionPrompt;
 import me.ogali.xenithlibrary.prompt.impl.impl.StringValueActionPrompt;
+import me.ogali.xenithlibrary.registiry.impl.ActionRegistry;
 import me.ogali.xenithlibrary.utilities.Chat;
 import org.bukkit.entity.Player;
 
@@ -22,6 +25,14 @@ public class ActionCreateListGuiItem extends GuiItem {
                 Constructor<? extends AbstractAction<?, ?>> constructor = abstractActionClass.getConstructor(String.class);
                 AbstractAction<?, ?> abstractAction = constructor.newInstance(id);
                 abstractAction.setId(id);
+
+                if (!abstractAction.getSettingHolder().getSettingsList().isEmpty()) {
+                    new ActionSettingsMenu().show(player, abstractAction);
+                    XenithLibrary.getInstance().getRegistryManager()
+                            .getRegistry(ActionRegistry.class)
+                            .register(abstractAction.getId(), abstractAction);
+                    return;
+                }
 
                 if (abstractAction.getValue() instanceof String) {
                     new StringValueActionPrompt<>((AbstractAction<?, String>) abstractAction).prompt(player);

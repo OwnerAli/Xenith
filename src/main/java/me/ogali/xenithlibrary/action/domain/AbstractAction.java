@@ -3,6 +3,7 @@ package me.ogali.xenithlibrary.action.domain;
 import lombok.Getter;
 import lombok.Setter;
 import me.ogali.xenithlibrary.XenithLibrary;
+import me.ogali.xenithlibrary.settings.SettingHolder;
 
 import java.util.Random;
 
@@ -13,27 +14,26 @@ public abstract class AbstractAction<T, V> implements Executable<T> {
     private String id;
     private V value;
     private double chance;
-    private boolean extraSettings;
+    private int extraSettingsAmount;
 
-    protected AbstractAction(String id, V value, double chance, boolean extraSettings) {
+    protected final SettingHolder settingHolder;
+
+    protected AbstractAction(String id, V value, double chance) {
         this.id = id;
         this.value = value;
         this.chance = chance;
-        this.extraSettings = extraSettings;
+        this.settingHolder = new SettingHolder();
+    }
+
+    protected AbstractAction(String id) {
+        this.id = id;
+        this.settingHolder = new SettingHolder();
     }
 
     public void saveExtraSettings() {
     }
 
-    ;
-
     public void loadExtraSettings(String[] settings) {
-    }
-
-    ;
-
-    protected AbstractAction(String id) {
-        this.id = id;
     }
 
     protected boolean isSuccessful(double chance) {

@@ -7,11 +7,11 @@ import org.bukkit.entity.Player;
 public class PlayerCommandAction extends StringValuePlayerAction {
 
     public PlayerCommandAction(String id, String value, double chance) {
-        super(id, value, chance, false);
+        super(id, value, chance);
     }
 
     public PlayerCommandAction(String id) {
-        super(id, "", 100.0, false);
+        super(id, "", 100.0);
     }
 
     @Override

@@ -4,6 +4,7 @@ import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.action.impl.impl.StringValuePlayerAction;
 import me.ogali.xenithlibrary.files.impl.ActionsFile;
 import me.ogali.xenithlibrary.settings.Setting;
+import me.ogali.xenithlibrary.utilities.Chat;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -35,7 +36,7 @@ public class PlayerTitleAction extends StringValuePlayerAction {
         int stay = (int) settingHolder.getSetting("Stay").getValue();
         int fadeOut = (int) settingHolder.getSetting("FadeOut").getValue();
 
-        player.sendTitle(getValue(), subTitle, fadeIn, stay, fadeOut);
+        player.sendTitle(Chat.colorize(getValue()), Chat.colorize(subTitle), fadeIn, stay, fadeOut);
     }
 
     @Override

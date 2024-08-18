@@ -6,6 +6,7 @@ public abstract class StringMatchItemCondition extends ItemStackCondition<String
 
     public StringMatchItemCondition(String id, int priority, boolean negate, String value) {
         super(id, priority, negate, value);
+        if (!(value.isBlank() || value.isEmpty())) return;
         setValue("Item Match");
     }
 

@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
 import me.ogali.xenithlibrary.utilities.Chat;
+import me.ogali.xenithlibrary.utilities.ItemBuilder;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 @Setter
@@ -19,6 +21,7 @@ public abstract class ItemStackCondition<T> extends AbstractCondition<ItemStack,
 
     public ItemStackCondition(String id, int priority, boolean negate) {
         super(id, priority, negate);
+        setKey(new ItemBuilder(Material.DEBUG_STICK).setName("XENITH_CONDITION_LIB_DEBUG_STICK_69").build());
     }
 
     @Override

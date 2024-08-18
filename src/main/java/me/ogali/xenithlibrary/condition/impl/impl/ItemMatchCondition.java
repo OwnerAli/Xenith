@@ -24,6 +24,11 @@ public class ItemMatchCondition extends ItemStackCondition<ItemStack> {
         this.value = value;
     }
 
+    public ItemMatchCondition(String id, int priority, boolean negate, String value) {
+        super(id, priority, negate, Serialization.deserialize(value));
+        this.value = getValue();
+    }
+
     @Override
     public boolean evaluate(ItemStack input) {
         return input.equals(value) != isNegate();
@@ -31,7 +36,7 @@ public class ItemMatchCondition extends ItemStackCondition<ItemStack> {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " " + (isNegate() ? getPriority() + " != " + Serialization.serialize(getValue()) : getPriority()
+        return getClass().getName() + " " + (isNegate() ? getPriority() + " != " + Serialization.serialize(getValue()) : getPriority()
                 + " == " + Serialization.serialize(getValue()));
     }
 

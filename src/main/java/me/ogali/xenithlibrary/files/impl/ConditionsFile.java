@@ -46,7 +46,11 @@ public class ConditionsFile extends XenithJsonFile<AbstractCondition<?, ?>> {
         String type = parts[0];
         int priority = Integer.parseInt(parts[1]);
         boolean negate = parts[2].equals("!=");
-        String value = parts[3];
+        StringBuilder value = new StringBuilder(parts[3]);
+
+        for (int i = 4; i < parts.length; i++) {
+            value.append(" ").append(parts[i]);
+        }
 
         try {
             Class<?> clazz = Class.forName(type);
@@ -55,10 +59,10 @@ public class ConditionsFile extends XenithJsonFile<AbstractCondition<?, ?>> {
 
             if (type.equals("ItemMatchCondition")) {
                 constructor = clazz.getConstructor(String.class, int.class, boolean.class, ItemStack.class);
-                condition = (AbstractCondition<?, ?>) constructor.newInstance(key, priority, negate, Serialization.deserialize(value));
+                condition = (AbstractCondition<?, ?>) constructor.newInstance(key, priority, negate, Serialization.deserialize(value.toString()));
             } else {
                 constructor = clazz.getConstructor(String.class, int.class, boolean.class, String.class);
-                condition = (AbstractCondition<?, ?>) constructor.newInstance(key, priority, negate, value);
+                condition = (AbstractCondition<?, ?>) constructor.newInstance(key, priority, negate, value.toString());
             }
             populatePassActionHolderFromIdList(passActionIdList, condition);
             populateFailActionHolderFromIdList(failActionIdList, condition);

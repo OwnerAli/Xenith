@@ -2,7 +2,6 @@ package me.ogali.xenithlibrary.prompt.impl;
 
 import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
-import me.ogali.xenithlibrary.menus.conditions.ConditionSettingsMenu;
 import me.ogali.xenithlibrary.prompt.AbstractChatPrompt;
 import me.ogali.xenithlibrary.registiry.impl.ConditionRegistry;
 import me.ogali.xenithlibrary.utilities.Chat;
@@ -20,7 +19,7 @@ public abstract class AbstractConditionChatPrompt<T extends AbstractCondition<?,
                 .getRegistry(ConditionRegistry.class)
                 .register(getType());
         Chat.tell(player, "&aCondition successfully created! &7(" + getType().getId() + ")");
-        new ConditionSettingsMenu().show(player, getType());
+//        new ConditionSettingsMenu().show(player, getType());
     }
 
 }

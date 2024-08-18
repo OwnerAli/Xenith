@@ -14,6 +14,10 @@ public class ItemDurabilityCondition extends ItemStackCondition<Integer> {
         super(id, priority, negate, value);
     }
 
+    public ItemDurabilityCondition(String id, int priority, boolean negate, String value) {
+        super(id, priority, negate, Integer.parseInt(value));
+    }
+
     public String getType() {
         return "itemDurability";
     }

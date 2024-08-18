@@ -4,11 +4,11 @@ import me.ogali.xenithlibrary.action.domain.AbstractAction;
 import me.ogali.xenithlibrary.prompt.AbstractChatPrompt;
 import me.ogali.xenithlibrary.settings.Setting;
 
-public class settingValuePrompt extends AbstractChatPrompt<AbstractAction<?, ?>> {
+public class SettingValuePrompt extends AbstractChatPrompt<AbstractAction<?, ?>> {
 
     private final Setting setting;
 
-    public settingValuePrompt(AbstractAction<?, ?> action, Setting setting) {
+    public SettingValuePrompt(AbstractAction<?, ?> action, Setting setting) {
         super(action);
         this.setting = setting;
     }
@@ -20,20 +20,20 @@ public class settingValuePrompt extends AbstractChatPrompt<AbstractAction<?, ?>>
         if (settingValue instanceof Integer) {
             setting.setValue(Integer.parseInt(value));
             return true;
-        } else if (settingValue instanceof Double doubleValue) {
-            setting.setValue(doubleValue);
+        } else if (settingValue instanceof Double) {
+            setting.setValue(Double.parseDouble(value));
             return true;
-        } else if (settingValue instanceof Float floatValue) {
-            setting.setValue(floatValue);
+        } else if (settingValue instanceof Float) {
+            setting.setValue(Float.parseFloat(value));
             return true;
-        } else if (settingValue instanceof Long longValue) {
-            setting.setValue(longValue);
+        } else if (settingValue instanceof Long) {
+            setting.setValue(Long.parseLong(value));
             return true;
         } else if (settingValue instanceof String) {
             setting.setValue(value);
             return true;
-        } else if (settingValue instanceof Boolean booleanValue) {
-            setting.setValue(booleanValue);
+        } else if (settingValue instanceof Boolean) {
+            setting.setValue(Boolean.parseBoolean(value));
             return true;
         }
 

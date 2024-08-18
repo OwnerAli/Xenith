@@ -10,7 +10,7 @@ public class ItemMaterialCondition extends StringMatchItemCondition {
         super(id, priority, negate);
         setValue("RED_TERRACOTTA");
     }
-    
+
     public ItemMaterialCondition(String id, int priority, boolean negate, String value) {
         super(id, priority, negate, value);
     }

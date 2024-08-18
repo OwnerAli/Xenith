@@ -10,7 +10,6 @@ import me.ogali.xenithlibrary.menus.guiItems.ConditionListGuiItem;
 import me.ogali.xenithlibrary.menus.panes.TopAndBottomSixPane;
 import me.ogali.xenithlibrary.registiry.impl.ConditionRegistry;
 import me.ogali.xenithlibrary.utilities.Chat;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

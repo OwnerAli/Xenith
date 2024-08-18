@@ -32,7 +32,7 @@ public class ActionsFile extends XenithJsonFile<AbstractAction<?, ?>> {
 
     @Nullable
     private AbstractAction<?, ?> getAbstractAction(String key) {
-        String[] parts = getString(key + ".").split(",");
+        String[] parts = getString(key + ".action").split(",");
         String className = parts[0]; // Fully qualified class name
         String value = parts[1];
         double chance = Double.parseDouble(parts[2]);

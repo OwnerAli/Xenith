@@ -26,8 +26,8 @@ public class ActionRegistry extends AbstractMapRegistry<String, AbstractAction<?
 
         getObjectMap().forEach((id, action) -> {
             if (action.toString() == null) return;
-            actionsFile.set(id, action);
-            action.saveExtraSettings();
+            actionsFile.set(id + ".action", action);
+            actionsFile.set(id + ".extraSettings", action.getSettingHolder());
         });
     }
 

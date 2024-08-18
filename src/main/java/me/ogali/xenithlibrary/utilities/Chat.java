@@ -73,18 +73,32 @@ public class Chat {
     }
 
     public static String listToString(List<String> strings) {
-        String d = ", ";
+        String delimiter = "ꨀ";
 
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < strings.size(); i++) {
             sb.append(strings.get(i));
             if (i != strings.size() - 1) {
-                sb.append(d);
+                sb.append(delimiter);
             }
         }
         return sb.toString();
     }
+
+    public static List<String> stringToList(String string) {
+        String delimiter = "ꨀ";
+        return new ArrayList<>(List.of(string.split(delimiter)));
+    }
+
+    public static String listToString(List<String> list, String delimiter) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : list) {
+            sb.append(s).append(delimiter);
+        }
+        return sb.toString();
+    }
+
 
     public static String actionListToString(List<AbstractAction<?, ?>> actionList) {
         String d = ", ";

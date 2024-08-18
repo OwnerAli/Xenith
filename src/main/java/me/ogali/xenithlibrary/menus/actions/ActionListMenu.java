@@ -3,7 +3,6 @@ package me.ogali.xenithlibrary.menus.actions;
 import me.despical.inventoryframework.Gui;
 import me.despical.inventoryframework.GuiItem;
 import me.despical.inventoryframework.pane.PaginatedPane;
-import me.despical.inventoryframework.pane.StaticPane;
 import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.holder.impl.ActionHolder;
 import me.ogali.xenithlibrary.menus.displayItems.BackButton;

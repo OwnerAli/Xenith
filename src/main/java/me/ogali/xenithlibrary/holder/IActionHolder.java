@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 public interface IActionHolder {
 
     void execute(Player player, Object... values);
+
     boolean contains(AbstractAction<?, ?> abstractAction);
 
 }

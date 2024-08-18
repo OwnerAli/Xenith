@@ -12,6 +12,7 @@ public abstract class AbstractCondition<K, V> implements Condition<K> {
     private String id;
     private int priority;
     private boolean negate;
+    private K key;
     private V value;
 
     private final ActionHolder passActionHolder;

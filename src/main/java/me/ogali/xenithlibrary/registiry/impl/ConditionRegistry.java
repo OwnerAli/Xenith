@@ -27,7 +27,7 @@ public class ConditionRegistry extends AbstractMapRegistry<String, AbstractCondi
 
         getObjectMap().forEach((id, condition) -> {
             conditionsFile.setPathPrefix(id);
-            conditionsFile.set("condition", condition);
+            conditionsFile.setDefault("condition", condition);
             conditionsFile.set("passActions", condition.getPassActionHolder().toIdList());
             conditionsFile.set("failActions", condition.getFailActionHolder().toIdList());
         });

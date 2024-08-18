@@ -17,7 +17,8 @@ public interface Registry<K, V> {
      *
      * @param object The value to be registered.
      */
-    default void register(V object) {}
+    default void register(V object) {
+    }
 
     /**
      * Registers a value in the registry with a specified key.
@@ -25,19 +26,20 @@ public interface Registry<K, V> {
      * @param key    The key associated with the value.
      * @param object The value to be registered.
      */
-    default void register(K key, V object) {}
+    default void register(K key, V object) {
+    }
 
     /**
      * Saves all data in the registry map to a json file
-     *
      */
-    default void saveToFile() {}
+    default void saveToFile() {
+    }
 
     /**
      * Loads all data from a file to the registry map
-     *
      */
-    default void loadFromFile(Json file) {}
+    default void loadFromFile(Json file) {
+    }
 
     /**
      * Unregisters a value from the registry using its key.

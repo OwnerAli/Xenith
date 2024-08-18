@@ -2,7 +2,7 @@ package me.ogali.xenithlibrary.prompt.listeners;
 
 import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.menus.actions.ActionSettingsMenu;
-import me.ogali.xenithlibrary.prompt.impl.impl.settingValuePrompt;
+import me.ogali.xenithlibrary.prompt.impl.impl.SettingValuePrompt;
 import me.ogali.xenithlibrary.registiry.impl.ChatPromptRegistry;
 import me.ogali.xenithlibrary.utilities.Chat;
 import org.bukkit.Bukkit;
@@ -36,8 +36,8 @@ public class PlayerChatListener implements Listener {
                         return;
                     }
                     if (!chatPrompt.setValue(event.getMessage())) return;
-                    if (chatPrompt instanceof settingValuePrompt settingValuePrompt) {
-                        Bukkit.getScheduler().runTask(XenithLibrary.getInstance(), () ->
+                    if (chatPrompt instanceof SettingValuePrompt settingValuePrompt) {
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(XenithLibrary.getInstance(), () ->
                                 new ActionSettingsMenu().show(player, settingValuePrompt.getType()));
                     }
                     chatPrompt.unPrompt(player);

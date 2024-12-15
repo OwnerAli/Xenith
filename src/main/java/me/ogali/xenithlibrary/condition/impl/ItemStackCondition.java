@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 public abstract class ItemStackCondition<T> extends AbstractCondition<ItemStack, T> {
 
     private T value;
+    private boolean offhand = false;
 
     public ItemStackCondition(String id, int priority, boolean negate, T value) {
         super(id, priority, negate, value);
@@ -37,6 +38,14 @@ public abstract class ItemStackCondition<T> extends AbstractCondition<ItemStack,
     @Override
     public boolean evaluate(ItemStack input) {
         return input.equals(value) != isNegate();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getName()
+                + " " +
+                (isNegate() ? getPriority() + " != " + getValue() :
+                        getPriority() + " == " + getValue()) + " " + (offhand ? "offhand" : "mainhand");
     }
 
 }

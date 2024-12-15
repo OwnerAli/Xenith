@@ -2,6 +2,7 @@ package me.ogali.xenithlibrary.files.impl;
 
 import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
+import me.ogali.xenithlibrary.condition.impl.ItemStackCondition;
 import me.ogali.xenithlibrary.registiry.impl.ActionRegistry;
 import me.ogali.xenithlibrary.registiry.impl.ConditionRegistry;
 import me.ogali.xenithlibrary.utilities.Serialization;
@@ -47,8 +48,16 @@ public class ConditionsFile extends XenithJsonFile<AbstractCondition<?, ?>> {
         int priority = Integer.parseInt(parts[1]);
         boolean negate = parts[2].equals("!=");
         StringBuilder value = new StringBuilder(parts[3]);
+        boolean offhand = false;
 
         for (int i = 4; i < parts.length; i++) {
+            if (parts[i].equalsIgnoreCase("offhand")) {
+                offhand = true;
+                continue;
+            } else if (parts[i].equalsIgnoreCase("mainhand")) {
+                offhand = false;
+                continue;
+            }
             value.append(" ").append(parts[i]);
         }
 
@@ -60,6 +69,15 @@ public class ConditionsFile extends XenithJsonFile<AbstractCondition<?, ?>> {
             if (type.equals("ItemMatchCondition")) {
                 constructor = clazz.getConstructor(String.class, int.class, boolean.class, ItemStack.class);
                 condition = (AbstractCondition<?, ?>) constructor.newInstance(key, priority, negate, Serialization.deserialize(value.toString()));
+                if (offhand) {
+                    ((ItemStackCondition<?>) condition).setOffhand(true);
+                }
+            } else if (type.equals("itemStack")) {
+                constructor = clazz.getConstructor(String.class, int.class, boolean.class, String.class);
+                condition = (AbstractCondition<?, ?>) constructor.newInstance(key, priority, negate, value.toString());
+                if (offhand) {
+                    ((ItemStackCondition<?>) condition).setOffhand(true);
+                }
             } else {
                 constructor = clazz.getConstructor(String.class, int.class, boolean.class, String.class);
                 condition = (AbstractCondition<?, ?>) constructor.newInstance(key, priority, negate, value.toString());

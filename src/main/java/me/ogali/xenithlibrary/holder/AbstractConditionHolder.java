@@ -30,11 +30,16 @@ public abstract class AbstractConditionHolder implements IConditionHolder {
     @Override
     public boolean evaluateConditionsAndExecuteActions(Player player, List<AbstractAction<?, ?>> executedActionsList, Object... values) {
         ItemStack itemStack = null;
+        ItemStack offHandItemStack = null;
         Location location = null;
 
         for (Object value : values) {
             if (value instanceof ItemStack item) {
-                itemStack = item;
+                if (itemStack == null) {
+                    itemStack = item;
+                } else {
+                    offHandItemStack = item;
+                }
             } else if (value instanceof Location loc) {
                 location = loc;
             }
@@ -49,6 +54,14 @@ public abstract class AbstractConditionHolder implements IConditionHolder {
         for (AbstractCondition<?, ?> abstractCondition : sortedConditionList) {
             if (abstractCondition instanceof ItemStackCondition<?> itemStackCondition) {
                 if (itemStack == null) continue;
+                if (itemStackCondition.isOffhand()) {
+                    if (offHandItemStack == null) continue;
+                    if (itemStackCondition.evaluate(offHandItemStack)) {
+                        itemStackCondition.getPassActionHolder().execute(player, values);
+                        executedActionsList.addAll(itemStackCondition.getPassActionHolder().getActionList());
+                        return true;
+                    }
+                }
                 if (itemStackCondition.evaluate(itemStack)) {
                     itemStackCondition.getPassActionHolder().execute(player, values);
                     executedActionsList.addAll(itemStackCondition.getPassActionHolder().getActionList());

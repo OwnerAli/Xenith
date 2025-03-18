@@ -7,6 +7,7 @@ import me.ogali.xenithlibrary.condition.impl.impl.ItemLoreMatchCondition;
 import me.ogali.xenithlibrary.condition.impl.impl.ItemMatchCondition;
 import me.ogali.xenithlibrary.condition.impl.impl.ItemMaterialCondition;
 import me.ogali.xenithlibrary.condition.impl.impl.ItemNameCondition;
+import me.ogali.xenithlibrary.events.ConditionCreatedEvent;
 import me.ogali.xenithlibrary.registiry.impl.ConditionRegistry;
 import me.ogali.xenithlibrary.utilities.Chat;
 import me.ogali.xenithlibrary.utilities.ItemBuilder;
@@ -68,6 +69,7 @@ public class ItemInputConditionMenu {
                     Chat.tell(player, "&aCondition successfully created! &7(" + itemStackCondition.getId() + ")");
                     XenithLibrary.getInstance().getRegistryManager().getRegistry(ConditionRegistry.class)
                             .register(itemStackCondition);
+                    new ConditionCreatedEvent(player, itemStackCondition).call();
                     new ConditionSettingsMenu().show(player, itemStackCondition);
                     return;
                 }

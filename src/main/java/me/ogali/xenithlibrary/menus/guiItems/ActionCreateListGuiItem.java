@@ -35,9 +35,9 @@ public class ActionCreateListGuiItem extends GuiItem {
                 }
 
                 if (abstractAction.getValue() instanceof String) {
-                    new StringValueActionPrompt<>((AbstractAction<?, String>) abstractAction).prompt(player);
+                    new StringValueActionPrompt<>((AbstractAction<?, String>) abstractAction, player).prompt(player);
                 } else if (abstractAction.getValue() instanceof Double) {
-                    new DoubleValueActionPrompt<>((AbstractAction<?, Double>) abstractAction).prompt(player);
+                    new DoubleValueActionPrompt<>((AbstractAction<?, Double>) abstractAction, player).prompt(player);
                 } else {
                     Chat.log("Error creating action: " + "Unknown value type");
                 }

@@ -19,7 +19,6 @@ public abstract class AbstractConditionChatPrompt<T extends AbstractCondition<?,
                 .getRegistry(ConditionRegistry.class)
                 .register(getType());
         Chat.tell(player, "&aCondition successfully created! &7(" + getType().getId() + ")");
-//        new ConditionSettingsMenu().show(player, getType());
     }
 
 }

@@ -31,7 +31,7 @@ public class ConditionCreateListGuiItem extends GuiItem {
                         || abstractCondition.getValue() instanceof List<?>) {
                     new ItemInputConditionMenu().show(player, (ItemStackCondition<ItemStack>) abstractCondition);
                 } else {
-                    new ConditionValuePrompt(abstractCondition).prompt(player);
+                    new ConditionValuePrompt(player, abstractCondition).prompt(player);
                 }
 
 //                if (abstractCondition.getValue() instanceof String) {

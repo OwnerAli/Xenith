@@ -6,7 +6,7 @@ import me.ogali.xenithlibrary.prompt.impl.AbstractActionChatPrompt;
 public class ActionChancePrompt extends AbstractActionChatPrompt<AbstractAction<?, ?>> {
 
     public ActionChancePrompt(AbstractAction<?, ?> value) {
-        super(value);
+        super(value, null);
     }
 
     @Override

@@ -20,9 +20,9 @@ public class ActionValueButton extends GuiItem {
                 click -> {
                     Player player = (Player) click.getWhoClicked();
                     if (action instanceof StringValuePlayerAction stringAction) {
-                        new StringValueActionPrompt<>(stringAction).prompt(player);
+                        new StringValueActionPrompt<>(stringAction, player).prompt(player);
                     } else if (action.getValue() instanceof Double) {
-                        new DoubleValueActionPrompt<>((AbstractAction<?, Double>) action).prompt(player);
+                        new DoubleValueActionPrompt<>((AbstractAction<?, Double>) action, player).prompt(player);
                     } else {
                         Chat.log("Error creating action: " + "Unknown value type! REPORT THIS TO THE DISCORD!");
                     }

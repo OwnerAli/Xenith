@@ -1,5 +1,7 @@
 package me.ogali.xenithlibrary.action.impl.impl.impl;
 
+import me.clip.placeholderapi.PlaceholderAPI;
+import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.action.impl.impl.StringValuePlayerAction;
 import me.ogali.xenithlibrary.utilities.Chat;
 import org.bukkit.entity.LivingEntity;
@@ -19,7 +21,11 @@ public class PlayerActionBarAction extends StringValuePlayerAction {
     public void execute(LivingEntity livingEntity) {
         if (!isSuccessful(getChance())) return;
         if (!(livingEntity instanceof Player player)) return;
-        Chat.tellActionBar(player, getValue());
+        String value = getValue();
+        if (XenithLibrary.PAPI) {
+            value = PlaceholderAPI.setPlaceholders(player, value);
+        }
+        Chat.tellActionBar(player, value);
     }
 
 }

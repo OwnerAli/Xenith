@@ -1,5 +1,6 @@
 package me.ogali.xenithlibrary.action.impl.impl.impl;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.action.impl.impl.StringValuePlayerAction;
 import me.ogali.xenithlibrary.files.impl.ActionsFile;
@@ -36,7 +37,12 @@ public class PlayerTitleAction extends StringValuePlayerAction {
         int stay = (int) settingHolder.getSetting("Stay").getValue();
         int fadeOut = (int) settingHolder.getSetting("FadeOut").getValue();
 
-        player.sendTitle(Chat.colorize(getValue()), Chat.colorize(subTitle), fadeIn, stay, fadeOut);
+        String value = getValue();
+        if (XenithLibrary.PAPI) {
+            value = PlaceholderAPI.setPlaceholders(player, value);
+            subTitle = PlaceholderAPI.setPlaceholders(player, subTitle);
+        }
+        player.sendTitle(Chat.colorize(value), Chat.colorize(subTitle), fadeIn, stay, fadeOut);
     }
 
     @Override

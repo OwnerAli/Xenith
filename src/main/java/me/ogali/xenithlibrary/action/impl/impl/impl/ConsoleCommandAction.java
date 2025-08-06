@@ -1,8 +1,11 @@
 package me.ogali.xenithlibrary.action.impl.impl.impl;
 
+import me.clip.placeholderapi.PlaceholderAPI;
+import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.action.impl.impl.StringValuePlayerAction;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 public class ConsoleCommandAction extends StringValuePlayerAction {
 
@@ -17,7 +20,11 @@ public class ConsoleCommandAction extends StringValuePlayerAction {
     @Override
     public void execute(LivingEntity livingEntity) {
         if (!isSuccessful(getChance())) return;
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), getValue().replace("%player%", livingEntity.getName()));
+        String value = getValue();
+        if (XenithLibrary.PAPI && (livingEntity instanceof Player player)) {
+            value = PlaceholderAPI.setPlaceholders(player, value);
+        }
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), value);
     }
 
 }

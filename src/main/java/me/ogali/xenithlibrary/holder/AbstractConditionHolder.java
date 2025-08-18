@@ -6,7 +6,6 @@ import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
 import me.ogali.xenithlibrary.condition.impl.EntityCondition;
 import me.ogali.xenithlibrary.condition.impl.ItemStackCondition;
 import me.ogali.xenithlibrary.condition.impl.LocationCondition;
-import me.ogali.xenithlibrary.condition.impl.impl.BiomeCondition;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

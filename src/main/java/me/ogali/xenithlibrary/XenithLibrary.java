@@ -19,6 +19,7 @@ import me.ogali.xenithlibrary.registiry.domain.impl.AbstractMapRegistry;
 import me.ogali.xenithlibrary.registiry.impl.ActionRegistry;
 import me.ogali.xenithlibrary.registiry.impl.ChatPromptRegistry;
 import me.ogali.xenithlibrary.registiry.impl.ConditionRegistry;
+import me.ogali.xenithlibrary.utilities.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,6 +29,7 @@ import java.lang.reflect.Modifier;
 import java.util.Random;
 
 public final class XenithLibrary extends JavaPlugin {
+    public static boolean PAPI = true;
 
     @Getter
     private static XenithLibrary instance;
@@ -45,7 +47,7 @@ public final class XenithLibrary extends JavaPlugin {
     public void onEnable() {
         instance = this;
         random = new Random();
-
+        loadPapi();
         initializeFiles();
         initializeRegistries(getClass().getPackageName());
         registerConditionTypes(getClass().getPackageName());
@@ -127,4 +129,10 @@ public final class XenithLibrary extends JavaPlugin {
         registryManager.getRegistry(ConditionRegistry.class).loadFromFile(conditionsFile);
     }
 
+    private void loadPapi() {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
+            PAPI = false;
+            Chat.log("Could not find PlaceholderAPI! This plugin is required for action placeholders.");
+        }
+    }
 }

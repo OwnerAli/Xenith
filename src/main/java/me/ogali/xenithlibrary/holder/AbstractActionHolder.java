@@ -1,6 +1,7 @@
 package me.ogali.xenithlibrary.holder;
 
 import lombok.Getter;
+import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.action.domain.AbstractAction;
 import me.ogali.xenithlibrary.action.impl.AbstractPlayerAction;
 import me.ogali.xenithlibrary.action.impl.impl.CancellableTypeAction;

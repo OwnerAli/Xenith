@@ -8,8 +8,6 @@ import me.ogali.xenithlibrary.action.domain.Executable;
 import me.ogali.xenithlibrary.action.impl.impl.impl.CancelEventAction;
 import me.ogali.xenithlibrary.action.impl.impl.impl.UnCancelEventAction;
 import me.ogali.xenithlibrary.commands.ConditionCommands;
-import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
-import me.ogali.xenithlibrary.condition.domain.Condition;
 import me.ogali.xenithlibrary.files.impl.ActionsFile;
 import me.ogali.xenithlibrary.files.impl.ConditionsFile;
 import me.ogali.xenithlibrary.manager.RegistryManager;
@@ -25,6 +23,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.reflections.Reflections;
 
+import java.io.File;
 import java.lang.reflect.Modifier;
 import java.util.Random;
 
@@ -112,8 +111,6 @@ public final class XenithLibrary extends JavaPlugin {
 
         cm.setFormat(MessageType.SYNTAX, ChatColor.RED, ChatColor.RED);
         cm.registerCommand(new ConditionCommands(registryManager));
-        cm.getCommandCompletions().registerCompletion("conditions", c -> registryManager.getRegistry(ConditionRegistry.class)
-                .getRegisteredConditions().stream().map(AbstractCondition::getId).toList());
         cm.getCommandCompletions().registerCompletion("actions", c -> registryManager.getRegistry(ActionRegistry.class)
                 .getObjectMap().values().stream().map(AbstractAction::getId).toList());
     }

@@ -19,6 +19,12 @@ public class PlaceholderCondition extends AbstractCondition {
     private String placeholder;
     private Object value;
 
+    public PlaceholderCondition(String id, Evaluator evaluator, String placeholder, Object value) {
+        super(id, evaluator);
+        this.placeholder = placeholder;
+        this.value = value;
+    }
+
     @Override
     public boolean test(Context context) {
         if (context.getPlayer() == null) return false;

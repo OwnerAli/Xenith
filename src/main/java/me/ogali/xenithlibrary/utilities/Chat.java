@@ -1,7 +1,6 @@
 package me.ogali.xenithlibrary.utilities;
 
 import me.ogali.xenithlibrary.XenithLibrary;
-import me.ogali.xenithlibrary.action.domain.AbstractAction;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -98,20 +97,4 @@ public class Chat {
         }
         return sb.toString();
     }
-
-
-    public static String actionListToString(List<AbstractAction<?, ?>> actionList) {
-        String d = ", ";
-
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < actionList.size(); i++) {
-            sb.append(actionList.get(i).getId());
-            if (i != actionList.size() - 1) {
-                sb.append(d);
-            }
-        }
-        return sb.toString();
-    }
-
 }

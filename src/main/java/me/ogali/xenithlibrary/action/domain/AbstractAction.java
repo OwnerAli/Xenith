@@ -3,49 +3,48 @@ package me.ogali.xenithlibrary.action.domain;
 import lombok.Getter;
 import lombok.Setter;
 import me.ogali.xenithlibrary.XenithLibrary;
-import me.ogali.xenithlibrary.settings.SettingHolder;
 
-import java.util.Random;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Getter
 @Setter
-public abstract class AbstractAction<T, V> implements Executable<T> {
-
+public abstract class AbstractAction implements Action {
     private String id;
-    private V value;
-    private double chance;
-    private int extraSettingsAmount;
+    private String typeKey;
+    private double chance = 100.0;
 
-    protected final SettingHolder settingHolder;
-
-    protected AbstractAction(String id, V value, double chance) {
-        this.id = id;
-        this.value = value;
-        this.chance = chance;
-        this.settingHolder = new SettingHolder();
+    /**
+     * Subclasses call this at the top of execute() to respect the chance field.
+     * <p>
+     * Usage:
+     * if (!rolledSuccessfully()) return;
+     */
+    protected boolean rolledSuccessfully() {
+        return XenithLibrary.getInstance().getRandom().nextDouble() * 100.0 <= chance;
     }
 
-    protected AbstractAction(String id) {
-        this.id = id;
-        this.settingHolder = new SettingHolder();
+    /**
+     * Serializes this action to a map for persistence.
+     * Subclasses override and call super() to include base fields, then add their own.
+     */
+    public Map<String, Object> serialize() {
+        Map<String, Object> data = new LinkedHashMap<>();
+        data.put("type", typeKey);
+        data.put("chance", chance);
+        return data;
     }
 
-    public void saveExtraSettings() {
+    /**
+     * Applies a raw string edit to a named field.
+     * Subclasses override to handle their own fields.
+     * Base class handles "chance".
+     */
+    public void applyEdit(String field, String value) {
+        if (field.equals("chance")) {
+            setChance(Double.parseDouble(value));
+            return;
+        }
+        throw new IllegalArgumentException("Unknown field: " + field);
     }
-
-    public void loadExtraSettings(String[] settings) {
-    }
-
-    protected boolean isSuccessful(double chance) {
-        Random random = XenithLibrary.getInstance().getRandom();
-        double randomValue = random.nextDouble() * 100.0; // Generate a random value between 0.0 and 100.0
-        return randomValue <= chance;
-    }
-
-    @Override
-    public String toString() {
-        if (getClass().getSimpleName().contains("Event")) return null;
-        return getClass().getName() + "," + getValue() + "," + chance;
-    }
-
 }

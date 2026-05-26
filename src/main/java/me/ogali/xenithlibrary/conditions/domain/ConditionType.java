@@ -1,25 +1,25 @@
 package me.ogali.xenithlibrary.conditions.domain;
 
 import lombok.Getter;
-import me.ogali.xenithlibrary.conditions.impl.block_age_condition.BlockAgeCondition;
-import me.ogali.xenithlibrary.conditions.impl.entity_killer_condition.EntityKillerCondition;
-import me.ogali.xenithlibrary.conditions.impl.placeholder_condition.PlaceholderCondition;
-import me.ogali.xenithlibrary.shared.ConfigBuilder;
 import org.bukkit.Material;
 
+/**
+ * Describes a registered condition type.
+ * Plugins create instances of this and register them via ConditionRegistry.
+ */
 @Getter
-public enum ConditionType {
-    PLACEHOLDER(PlaceholderCondition.builder(), PlaceholderCondition.class, Material.ITEM_FRAME),
-    ENTITY_KILLER(EntityKillerCondition.builder(), EntityKillerCondition.class, Material.IRON_SWORD),
-    BLOCK_AGE(BlockAgeCondition.builder(), BlockAgeCondition.class, Material.CLOCK);
+public final class ConditionType {
+    private final String key;
+    private final ConditionBuilder builder;
+    private final Material icon; // optional, for GUIs
 
-    private final ConfigBuilder<AbstractCondition> builder;
-    private final Class<?> representingClass;
-    private final Material creationMaterial;
+    public ConditionType(String key, ConditionBuilder builder) {
+        this(key, builder, Material.PAPER);
+    }
 
-    ConditionType(ConfigBuilder<AbstractCondition> builder, Class<?> representedClass, Material creationMaterial) {
+    public ConditionType(String key, ConditionBuilder builder, Material icon) {
+        this.key = key.toUpperCase();
         this.builder = builder;
-        this.representingClass = representedClass;
-        this.creationMaterial = creationMaterial;
+        this.icon = icon;
     }
 }

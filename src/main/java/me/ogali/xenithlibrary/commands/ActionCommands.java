@@ -1,50 +1,81 @@
 package me.ogali.xenithlibrary.commands;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
-import me.ogali.xenithlibrary.manager.RegistryManager;
+import me.ogali.xenithlibrary.action.domain.ActionContext;
+import me.ogali.xenithlibrary.action.domain.ActionRegistry;
 import me.ogali.xenithlibrary.menus.actions.ActionCreateMenu;
 import me.ogali.xenithlibrary.menus.actions.ActionListMenu;
-import me.ogali.xenithlibrary.menus.actions.ActionSettingsMenu;
-import me.ogali.xenithlibrary.registiry.impl.ActionRegistry;
 import me.ogali.xenithlibrary.utilities.Chat;
 import org.bukkit.entity.Player;
 
-@CommandAlias("xenithcondition|xc")
+@CommandAlias("xenithaction|xa")
 @SuppressWarnings("unused")
-public class ActionCommands {
+public class ActionCommands extends BaseCommand {
 
-    private final RegistryManager registryManager;
-    private final ActionRegistry actionRegistry;
-
-    public ActionCommands(RegistryManager registryManager) {
-        this.registryManager = registryManager;
-        this.actionRegistry = registryManager.getRegistry(ActionRegistry.class);
+    @Subcommand("create")
+    @CommandPermission("xenith.action.create")
+    @Syntax("<id>")
+    @Description("Create a new action")
+    public void onCreate(Player player, String id) {
+        if (ActionRegistry.isRegistered(id)) {
+            Chat.tellFormatted(player, "&cAn action with id &e%s &calready exists.", id);
+            return;
+        }
+        Chat.tellFormatted(player, "&aCreating action: &e%s", id);
+        ActionCreateMenu.show(player, id);
     }
 
-    @Subcommand("action create")
-    @CommandPermission("zenith.action.create")
-    @Syntax("[id]")
-    public void onActionCreate(Player player, String id) {
-        actionRegistry.get(id)
-                .ifPresentOrElse(abstractAction ->
-                                Chat.tellFormatted(player, "&cAn action with id %s, already exists.", id),
-                        () -> new ActionCreateMenu(registryManager).show(player, id));
-    }
-
-    @Subcommand("action edit")
-    @CommandPermission("zenith.action.edit")
+    @Subcommand("edit")
+    @CommandPermission("xenith.action.edit")
     @CommandCompletion("@actions")
-    @Syntax("[id]")
-    public void onActionEdit(Player player, String id) {
-        actionRegistry.get(id)
-                .ifPresentOrElse(action -> new ActionSettingsMenu().show(player, action),
-                        () -> Chat.tellFormatted(player, "&cAn action with id %s, does not exist.", id));
+    @Syntax("<id>")
+    @Description("Edit an existing action")
+    public void onEdit(Player player, String id) {
+        if (!ActionRegistry.isRegistered(id)) {
+            Chat.tellFormatted(player, "&cNo action with id &e%s &cexists.", id);
+            return;
+        }
+        // TODO: open ActionSettingsMenu
+        Chat.tellFormatted(player, "&aEditing action: &e%s", id);
     }
 
-    @Subcommand("action list")
-    @CommandPermission("zenith.condition.list")
-    public void onActionList(Player player) {
+    @Subcommand("list")
+    @CommandPermission("xenith.action.list")
+    @Description("List all registered actions")
+    public void onList(Player player) {
+        if (ActionRegistry.allInstances().isEmpty()) {
+            Chat.tell(player, "&cNo actions registered.");
+            return;
+        }
         ActionListMenu.show(player);
     }
 
+    @Subcommand("delete")
+    @CommandPermission("xenith.action.delete")
+    @CommandCompletion("@actions")
+    @Syntax("<id>")
+    @Description("Delete an existing action")
+    public void onDelete(Player player, String id) {
+        if (!ActionRegistry.isRegistered(id)) {
+            Chat.tellFormatted(player, "&cNo action with id &e%s &cexists.", id);
+            return;
+        }
+        ActionRegistry.delete(id);
+        Chat.tellFormatted(player, "&aAction &e%s &adeleted.", id);
+    }
+
+    @Subcommand("test")
+    @CommandPermission("xenith.action.test")
+    @CommandCompletion("@actions")
+    @Syntax("<id>")
+    @Description("Execute an action against yourself for testing")
+    public void onTest(Player player, String id) {
+        if (!ActionRegistry.isRegistered(id)) {
+            Chat.tellFormatted(player, "&cNo action with id &e%s &cexists.", id);
+            return;
+        }
+        ActionRegistry.get(id).execute(ActionContext.of(player));
+        Chat.tellFormatted(player, "&aExecuted action: &e%s", id);
+    }
 }

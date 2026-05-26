@@ -1,16 +1,37 @@
 package me.ogali.xenithlibrary.conditions.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import me.ogali.xenithlibrary.conditions.evaluator.Evaluator;
 
-@Setter
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Setter
 public abstract class AbstractCondition implements Condition {
     private String id;
-    protected Evaluator evaluator;
+    private String typeKey;
+    private Evaluator evaluator;
+
+    /**
+     * Convenience method for subclasses that need to compare values.
+     * Falls back to EQUAL if no evaluator was configured.
+     */
+    protected boolean evaluate(String actual, String expected) {
+        Evaluator ev = evaluator != null ? evaluator : Evaluator.EQUAL;
+        return ev.evaluate(actual, expected);
+    }
+
+    /**
+     * Serializes this condition to a map for persistence.
+     * Subclasses override and call super() to include base fields, then add their own.
+     */
+    public Map<String, Object> serialize() {
+        Map<String, Object> data = new LinkedHashMap<>();
+        data.put("type", typeKey);
+        if (id != null) data.put("id", id);
+        if (evaluator != null) data.put("evaluator", evaluator.name());
+        return data;
+    }
 }

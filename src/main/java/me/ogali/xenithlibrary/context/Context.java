@@ -1,4 +1,4 @@
-package me.ogali.xenithlibrary.shared;
+package me.ogali.xenithlibrary.context;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,8 +21,7 @@ public class Context {
     private Event bukkitEvent;
     private final PersistentData data = new PersistentData();
 
-    public Context() {}
-
+    // @Builder can't handle final fields — use a static factory instead
     public static Context of(Player player, Event event) {
         Context ctx = new Context();
         ctx.player = player;
@@ -38,13 +37,15 @@ public class Context {
         return of(player, null);
     }
 
+    // -------------------------------------------------------------------------
+
     public static class PersistentData {
 
         private static final Pattern VAR_PATTERN = Pattern.compile("\\$\\{([\\w-]+)}");
         private final Map<String, Object> map = new HashMap<>();
 
         public void set(String key, Object value) {
-            map.put(key, value);
+            map.put(key, value);  // put already overwrites — no containsKey needed
         }
 
         public void remove(String key) {
@@ -66,6 +67,10 @@ public class Context {
             return Collections.unmodifiableMap(map);
         }
 
+        /**
+         * Replaces ${key} placeholders in a string with values from the context map.
+         * Unknown keys are replaced with an empty string.
+         */
         public String interpolate(String input) {
             Matcher matcher = VAR_PATTERN.matcher(input);
             StringBuilder result = new StringBuilder();

@@ -36,7 +36,7 @@ public class ActionCommands extends BaseCommand {
             Chat.tellFormatted(player, "&cNo action with id &e%s &cexists.", id);
             return;
         }
-        // TODO: open ActionSettingsMenu
+        ActionListMenu.show(player);
         Chat.tellFormatted(player, "&aEditing action: &e%s", id);
     }
 

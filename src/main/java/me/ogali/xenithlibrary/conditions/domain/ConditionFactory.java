@@ -86,7 +86,6 @@ public class ConditionFactory {
         return Arrays.stream(andParts)
                 .map(String::trim)
                 .map(this::getNamed)
-                .map(c -> (Condition) c)
                 .reduce(Condition::and)
                 .orElseThrow();
     }

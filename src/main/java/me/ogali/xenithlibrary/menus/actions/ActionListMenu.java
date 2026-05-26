@@ -87,7 +87,7 @@ public class ActionListMenu {
 
     private static ItemStack buildActionIcon(AbstractAction action) {
         // Use the icon from the registered ActionType
-        Material icon = ActionRegistry.getType(action.getTypeKey()).getIcon();
+        Material icon = ActionRegistry.getType(action.getTypeKey()).icon();
         return GuiUtil.item(
                 icon,
                 "&f" + action.getId(),

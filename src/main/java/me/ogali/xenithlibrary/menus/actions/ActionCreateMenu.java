@@ -42,9 +42,9 @@ public class ActionCreateMenu {
             ActionType type = types.get(i);
             content.addItem(new GuiItem(
                     GuiUtil.item(
-                            type.getIcon(),
-                            "&f" + type.getKey(),
-                            "&7Click to create a &e" + type.getKey() + " &7action",
+                            type.icon(),
+                            "&f" + type.key(),
+                            "&7Click to create a &e" + type.key() + " &7action",
                             "&7ID: &e" + id
                     ),
                     e -> openFieldEditor(player, type, id)
@@ -111,7 +111,7 @@ public class ActionCreateMenu {
                         Material.EMERALD,
                         "&a&lSave Action",
                         "&7ID: &e" + id,
-                        "&7Type: &e" + type.getKey(),
+                        "&7Type: &e" + type.key(),
                         "",
                         "&aClick to save."
                 ),
@@ -131,11 +131,11 @@ public class ActionCreateMenu {
     // -------------------------------------------------------------------------
 
     private static AbstractAction buildDefault(ActionType type, String id) {
-        AbstractAction action = type.getBuilder().build(new DomainConfig(
-                Map.of("type", type.getKey())
+        AbstractAction action = type.builder().build(new DomainConfig(
+                Map.of("type", type.key())
         ));
         action.setId(id);
-        action.setTypeKey(type.getKey());
+        action.setTypeKey(type.key());
         return action;
     }
 }

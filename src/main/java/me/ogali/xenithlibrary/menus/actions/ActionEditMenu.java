@@ -89,7 +89,7 @@ public class ActionEditMenu {
                 .withFirstPrompt(new StringPrompt() {
 
                     @Override
-                    public String getPromptText(ConversationContext context) {
+                    public @NotNull String getPromptText(@NotNull ConversationContext context) {
                         return Chat.colorize(
                                 "&aEnter a new value for &e" + field + "&a:\n" +
                                         "&7Type &ccancel &7to abort."

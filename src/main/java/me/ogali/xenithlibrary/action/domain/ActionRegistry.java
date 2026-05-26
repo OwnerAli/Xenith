@@ -19,7 +19,7 @@ public final class ActionRegistry {
     }
 
     public static void registerType(ActionType type) {
-        String key = type.getKey().toUpperCase(); // consistent with ConditionRegistry
+        String key = type.key().toUpperCase(); // consistent with ConditionRegistry
         if (types.containsKey(key)) {
             throw new IllegalStateException("Action type already registered: " + key);
         }
@@ -47,7 +47,7 @@ public final class ActionRegistry {
             try {
                 String typeKey = ((String) config.get("type")).toUpperCase();
                 ActionType type = getType(typeKey);
-                AbstractAction action = type.getBuilder().build(new DomainConfig(config));
+                AbstractAction action = type.builder().build(new DomainConfig(config));
                 action.setId(key);
                 action.setTypeKey(typeKey);
                 instances.put(key, action);

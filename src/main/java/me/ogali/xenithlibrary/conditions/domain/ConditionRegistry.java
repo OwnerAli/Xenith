@@ -2,8 +2,7 @@ package me.ogali.xenithlibrary.conditions.domain;
 
 import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.conditions.evaluator.Evaluator;
-import me.ogali.xenithlibrary.conditions.impl.BlockAgeCondition;
-import me.ogali.xenithlibrary.conditions.impl.PlaceholderCondition;
+import me.ogali.xenithlibrary.conditions.impl.*;
 import me.ogali.xenithlibrary.files.impl.ConditionsFile;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import org.bukkit.Material;
@@ -24,7 +23,24 @@ public final class ConditionRegistry {
     }
 
     static {
+        registerType(new ConditionType("BLOCK_TYPE", BlockTypeCondition::fromConfig, Material.GRASS_BLOCK));
         registerType(new ConditionType("BLOCK_AGE", BlockAgeCondition::fromConfig, Material.CLOCK));
+        registerType(new ConditionType("BLOCK_BIOME", BlockBiomeCondition::fromConfig, Material.FERN));
+        registerType(new ConditionType("BLOCK_WORLD", BlockWorldCondition::fromConfig, Material.ENDER_PEARL));
+        registerType(new ConditionType("TOOL_MATERIAL", ToolMaterialCondition::fromConfig, Material.IRON_PICKAXE));
+        registerType(new ConditionType("TOOL_ENCHANTMENT", ToolEnchantmentCondition::fromConfig, Material.ENCHANTING_TABLE));
+        registerType(new ConditionType("TOOL_ENCHANTMENT_LEVEL", ToolEnchantmentLevelCondition::fromConfig, Material.EXPERIENCE_BOTTLE));
+        registerType(new ConditionType("TOOL_DURABILITY", ToolDurabilityCondition::fromConfig, Material.ANVIL));
+        registerType(new ConditionType("TOOL_NAME", ToolNameCondition::fromConfig, Material.NAME_TAG));
+        registerType(new ConditionType("TOOL_LORE", ToolLoreCondition::fromConfig, Material.WRITABLE_BOOK));
+        registerType(new ConditionType("PLAYER_GAMEMODE", PlayerGamemodeCondition::fromConfig, Material.COMPASS));
+        registerType(new ConditionType("PLAYER_WORLD", PlayerWorldCondition::fromConfig, Material.GRASS_BLOCK));
+        registerType(new ConditionType("PLAYER_HEALTH", PlayerHealthCondition::fromConfig, Material.RED_DYE));
+        registerType(new ConditionType("PLAYER_LEVEL", PlayerLevelCondition::fromConfig, Material.EXPERIENCE_BOTTLE));
+        registerType(new ConditionType("PLAYER_PERMISSION", PlayerPermissionCondition::fromConfig, Material.GOLDEN_APPLE));
+        registerType(new ConditionType("PLAYER_IS_SNEAKING", PlayerIsSneakingCondition::fromConfig, Material.LEATHER_BOOTS));
+        registerType(new ConditionType("PLAYER_IS_SPRINTING", PlayerIsSprintingCondition::fromConfig, Material.FEATHER));
+        registerType(new ConditionType("PLAYER_BIOME", PlayerBiomeCondition::fromConfig, Material.SUNFLOWER));
         registerType(new ConditionType("PLACEHOLDER", PlaceholderCondition::fromConfig, Material.ITEM_FRAME));
     }
 

@@ -34,15 +34,15 @@ public class ConditionCreateMenu {
     public static void show(Player player, String id) {
         List<ConditionType> types = new ArrayList<>(ConditionRegistry.allTypes().values());
 
-        ChestGui gui = new ChestGui(4, "Create Condition — Pick Type");
+        ChestGui gui = new ChestGui(5, "Create Condition — Pick Type");
         gui.setOnTopClick(e -> e.setCancelled(true));
 
-        OutlinePane border = new OutlinePane(9, 4, Pane.Priority.LOWEST);
+        OutlinePane border = new OutlinePane(9, 5, Pane.Priority.LOWEST);
         border.addItem(new GuiItem(GuiUtil.filler()));
         border.setRepeat(true);
         gui.addPane(Slot.fromXY(0, 0), border);
 
-        StaticPane content = new StaticPane(7, 2);
+        StaticPane content = new StaticPane(7, 3);
 
         for (int i = 0; i < types.size(); i++) {
             ConditionType type = types.get(i);
@@ -61,7 +61,7 @@ public class ConditionCreateMenu {
 
         StaticPane bottom = new StaticPane(9, 1);
         bottom.addItem(new GuiItem(GuiUtil.back(), e -> player.closeInventory()), 0, 0);
-        gui.addPane(Slot.fromXY(0, 3), bottom);
+        gui.addPane(Slot.fromXY(0, 4), bottom);
 
         gui.show(player);
     }

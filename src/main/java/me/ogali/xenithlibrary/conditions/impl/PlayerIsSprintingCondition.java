@@ -3,43 +3,41 @@ package me.ogali.xenithlibrary.conditions.impl;
 import me.ogali.xenithlibrary.conditions.domain.AbstractCondition;
 import me.ogali.xenithlibrary.conditions.domain.ConditionContext;
 import me.ogali.xenithlibrary.shared.DomainConfig;
-import org.bukkit.block.data.Ageable;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class BlockAgeCondition extends AbstractCondition {
+public class PlayerIsSprintingCondition extends AbstractCondition {
 
-    private int age;
+    private boolean sprinting;
 
-    public BlockAgeCondition(int age) {
-        this.age = age;
+    public PlayerIsSprintingCondition(boolean sprinting) {
+        this.sprinting = sprinting;
     }
 
     @Override
     public boolean test(ConditionContext context) {
         if (!(context.getBukkitEvent() instanceof BlockBreakEvent event)) return false;
-        if (!(event.getBlock().getBlockData() instanceof Ageable ageable)) return false;
-        return evaluate(String.valueOf(ageable.getAge()), String.valueOf(age));
+        return evaluate(String.valueOf(event.getPlayer().isSprinting()), String.valueOf(sprinting));
     }
 
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> data = new LinkedHashMap<>(super.serialize());
-        data.put("age", age);
+        data.put("sprinting", sprinting);
         return data;
     }
 
     @Override
     public void applyEdit(String field, String value) {
         switch (field) {
-            case "age" -> this.age = Integer.parseInt(value);
-            default    -> super.applyEdit(field, value);
+            case "sprinting" -> this.sprinting = Boolean.parseBoolean(value);
+            default          -> super.applyEdit(field, value);
         }
     }
 
     public static AbstractCondition fromConfig(DomainConfig config) {
-        return new BlockAgeCondition(config.getInt("age", 0));
+        return new PlayerIsSprintingCondition(config.getBoolean("sprinting", true));
     }
 }

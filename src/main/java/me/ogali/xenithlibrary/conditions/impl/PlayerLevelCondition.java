@@ -3,43 +3,41 @@ package me.ogali.xenithlibrary.conditions.impl;
 import me.ogali.xenithlibrary.conditions.domain.AbstractCondition;
 import me.ogali.xenithlibrary.conditions.domain.ConditionContext;
 import me.ogali.xenithlibrary.shared.DomainConfig;
-import org.bukkit.block.data.Ageable;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class BlockAgeCondition extends AbstractCondition {
+public class PlayerLevelCondition extends AbstractCondition {
 
-    private int age;
+    private int level;
 
-    public BlockAgeCondition(int age) {
-        this.age = age;
+    public PlayerLevelCondition(int level) {
+        this.level = level;
     }
 
     @Override
     public boolean test(ConditionContext context) {
         if (!(context.getBukkitEvent() instanceof BlockBreakEvent event)) return false;
-        if (!(event.getBlock().getBlockData() instanceof Ageable ageable)) return false;
-        return evaluate(String.valueOf(ageable.getAge()), String.valueOf(age));
+        return evaluate(String.valueOf(event.getPlayer().getLevel()), String.valueOf(level));
     }
 
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> data = new LinkedHashMap<>(super.serialize());
-        data.put("age", age);
+        data.put("level", level);
         return data;
     }
 
     @Override
     public void applyEdit(String field, String value) {
         switch (field) {
-            case "age" -> this.age = Integer.parseInt(value);
-            default    -> super.applyEdit(field, value);
+            case "level" -> this.level = Integer.parseInt(value);
+            default      -> super.applyEdit(field, value);
         }
     }
 
     public static AbstractCondition fromConfig(DomainConfig config) {
-        return new BlockAgeCondition(config.getInt("age", 0));
+        return new PlayerLevelCondition(config.getInt("level", 0));
     }
 }

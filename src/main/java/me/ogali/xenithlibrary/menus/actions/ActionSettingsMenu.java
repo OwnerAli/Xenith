@@ -14,6 +14,7 @@ import me.ogali.xenithlibrary.utilities.GuiUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Map;
 
 public class ActionSettingsMenu {
@@ -22,52 +23,55 @@ public class ActionSettingsMenu {
         ChestGui gui = new ChestGui(4, "Editing: " + action.getId());
         gui.setOnTopClick(e -> e.setCancelled(true));
 
-        // --- Border ---
         OutlinePane border = new OutlinePane(9, 4, Pane.Priority.LOWEST);
         border.addItem(new GuiItem(GuiUtil.filler()));
         border.setRepeat(true);
         gui.addPane(Slot.fromXY(0, 0), border);
 
-        // --- Settings pane ---
         StaticPane settings = new StaticPane(7, 2);
 
-        // Each serialized field becomes a clickable button
-        Map<String, Object> serialized = action.serialize();
-        int slot = 0;
+        // Collect to list for stable index — fixes slot counter bug
+        List<Map.Entry<String, Object>> entries = action.serialize().entrySet().stream()
+                .filter(e -> !e.getKey().equals("type"))
+                .toList();
 
-        for (Map.Entry<String, Object> entry : serialized.entrySet()) {
-            String fieldKey = entry.getKey();
-            Object fieldValue = entry.getValue();
+        for (int i = 0; i < entries.size(); i++) {
+            String key = entries.get(i).getKey();
+            Object value = entries.get(i).getValue();
 
-            // type key is not editable
-            if (fieldKey.equals("type")) continue;
-
-            GuiItem fieldItem = new GuiItem(
+            settings.addItem(new GuiItem(
                     GuiUtil.item(
                             Material.PAPER,
-                            "&f" + fieldKey,
-                            "&7Current: &e" + fieldValue,
+                            "&f" + key,
+                            "&7Current: &e" + value,
                             "",
                             "&aClick to edit"
                     ),
-                    e -> ActionEditMenu.show(player, action, fieldKey, gui)
-            );
-
-            settings.addItem(fieldItem, slot % 7, slot / 7);
-            slot++;
+                    e -> ActionEditMenu.show(player, action, key, gui)
+            ), i % 7, i / 7);
         }
 
         gui.addPane(Slot.fromXY(1, 1), settings);
 
-        // --- Bottom bar ---
         StaticPane bottom = new StaticPane(9, 1);
 
-        // Back button
-        bottom.addItem(new GuiItem(GuiUtil.back(),
-                e -> previousGui.show(player)
+        bottom.addItem(new GuiItem(
+                GuiUtil.back(),
+                e -> {
+                    if (previousGui != null) previousGui.show(player);
+                    else ActionListMenu.show(player);
+                }
         ), 0, 0);
 
-        // Delete button
+        bottom.addItem(new GuiItem(
+                GuiUtil.item(Material.LIME_DYE, "&a&lTest Action",
+                        "&7Execute this action against yourself."),
+                e -> {
+                    action.execute(ActionContext.of(player));
+                    Chat.tellFormatted(player, "&aExecuted action: &e%s", action.getId());
+                }
+        ), 4, 0);
+
         bottom.addItem(new GuiItem(
                 GuiUtil.item(Material.RED_DYE, "&c&lDelete Action",
                         "&7This action will be permanently deleted."),
@@ -77,16 +81,6 @@ public class ActionSettingsMenu {
                     Chat.tellFormatted(player, "&cAction &e%s &cdeleted.", action.getId());
                 }
         ), 8, 0);
-
-        // Test button
-        bottom.addItem(new GuiItem(
-                GuiUtil.item(Material.LIME_DYE, "&a&lTest Action",
-                        "&7Execute this action against yourself."),
-                e -> {
-                    action.execute(ActionContext.of(player));
-                    Chat.tellFormatted(player, "&aExecuted action: &e%s", action.getId());
-                }
-        ), 4, 0);
 
         gui.addPane(Slot.fromXY(0, 3), bottom);
         gui.show(player);

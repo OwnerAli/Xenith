@@ -34,4 +34,17 @@ public abstract class AbstractCondition implements Condition {
         if (evaluator != null) data.put("evaluator", evaluator.name());
         return data;
     }
+
+    /**
+     * Applies a raw string edit to a named field.
+     * Subclasses override to handle their own fields.
+     * this keeps the pattern consistent with AbstractAction.
+     */
+    public void applyEdit(String field, String value) {
+        if (field.equals("evaluator")) {
+            setEvaluator(Evaluator.valueOf(value.toUpperCase()));
+            return;
+        }
+        throw new IllegalArgumentException("Unknown field: '" + field + "' on " + getTypeKey());
+    }
 }

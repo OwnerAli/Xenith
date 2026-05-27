@@ -3,6 +3,7 @@ package me.ogali.xenithlibrary.conditions.domain;
 import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.conditions.evaluator.Evaluator;
 import me.ogali.xenithlibrary.conditions.impl.BlockAgeCondition;
+import me.ogali.xenithlibrary.conditions.impl.PlaceholderCondition;
 import me.ogali.xenithlibrary.files.impl.ConditionsFile;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import org.bukkit.Material;
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class ConditionRegistry {
+
     private static final Map<String, ConditionType> types = new HashMap<>();
     private static final Map<String, AbstractCondition> instances = new HashMap<>();
 
@@ -23,7 +25,12 @@ public final class ConditionRegistry {
 
     static {
         registerType(new ConditionType("BLOCK_AGE", BlockAgeCondition::fromConfig, Material.CLOCK));
+        registerType(new ConditionType("PLACEHOLDER", PlaceholderCondition::fromConfig, Material.ITEM_FRAME));
     }
+
+    // -------------------------------------------------------------------------
+    // Type registration
+    // -------------------------------------------------------------------------
 
     public static void registerType(ConditionType type) {
         String key = type.getKey().toUpperCase();
@@ -48,6 +55,10 @@ public final class ConditionRegistry {
         return types.containsKey(key.toUpperCase());
     }
 
+    // -------------------------------------------------------------------------
+    // Instance management
+    // -------------------------------------------------------------------------
+
     public static void loadFromFile() {
         Map<String, Map<String, Object>> data = file.loadAll();
         data.forEach((key, config) -> {
@@ -58,14 +69,13 @@ public final class ConditionRegistry {
                 condition.setId(key);
                 condition.setTypeKey(typeKey);
 
-                // Evaluator is optional
                 Object evaluatorRaw = config.get("evaluator");
                 if (evaluatorRaw instanceof String evaluatorStr) {
                     condition.setEvaluator(Evaluator.valueOf(evaluatorStr.toUpperCase()));
                 }
 
                 instances.put(key, condition);
-                factory.register(key, condition); // keep factory in sync for parseHolder()
+                factory.register(key, condition);
             } catch (Exception e) {
                 log("Failed to load condition '" + key + "': " + e.getMessage());
             }
@@ -82,13 +92,20 @@ public final class ConditionRegistry {
                 });
     }
 
-    /**
-     * Registers a runtime-created condition and persists it.
-     */
     public static void register(AbstractCondition condition) {
         instances.put(condition.getId(), condition);
         factory.register(condition.getId(), condition);
         file.save(condition.getId(), condition.serialize());
+    }
+
+    public static boolean isRegistered(String id) {
+        return instances.containsKey(id);
+    }
+
+    public static void delete(String id) {
+        instances.remove(id);
+        factory.removeNamed(id); // delegates to factory — fixed method name
+        file.delete(id);
     }
 
     public static AbstractCondition get(String id) {
@@ -102,9 +119,6 @@ public final class ConditionRegistry {
         return condition;
     }
 
-    /**
-     * Used when building ConditionHolders from config blocks at runtime.
-     */
     public static ConditionFactory factory() {
         return factory;
     }
@@ -117,9 +131,13 @@ public final class ConditionRegistry {
         return Collections.unmodifiableMap(types);
     }
 
+    /**
+     * For tests only.
+     */
     static void reset() {
         types.clear();
         instances.clear();
+        factory.reset();
     }
 
     private static void log(String message) {

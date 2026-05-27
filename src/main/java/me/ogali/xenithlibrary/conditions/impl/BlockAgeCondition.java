@@ -6,10 +6,12 @@ import me.ogali.xenithlibrary.shared.DomainConfig;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import java.util.Objects;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class BlockAgeCondition extends AbstractCondition {
-    private final int age;
+
+    private int age;
 
     public BlockAgeCondition(int age) {
         this.age = age;
@@ -22,11 +24,23 @@ public class BlockAgeCondition extends AbstractCondition {
         return evaluate(String.valueOf(ageable.getAge()), String.valueOf(age));
     }
 
-    /**
-     * Called by ConditionType registration — factory handles evaluator externally.
-     */
-    public static BlockAgeCondition fromConfig(DomainConfig config) {
-        int age = Objects.requireNonNull(config.getInt("age"), "BlockAgeCondition requires 'age'");
+    @Override
+    public Map<String, Object> serialize() {
+        Map<String, Object> data = new LinkedHashMap<>(super.serialize());
+        data.put("age", age);
+        return data;
+    }
+
+    @Override
+    public void applyEdit(String field, String value) {
+        switch (field) {
+            case "age" -> this.age = Integer.parseInt(value);
+            default -> super.applyEdit(field, value);
+        }
+    }
+
+    public static AbstractCondition fromConfig(DomainConfig config) {
+        int age = config.getInt("age", 0);
         return new BlockAgeCondition(age);
     }
 }

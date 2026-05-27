@@ -5,6 +5,7 @@ import co.aikar.commands.PaperCommandManager;
 import lombok.Getter;
 import me.ogali.xenithlibrary.action.domain.ActionRegistry;
 import me.ogali.xenithlibrary.commands.ActionCommands;
+import me.ogali.xenithlibrary.commands.ConditionCommands;
 import me.ogali.xenithlibrary.conditions.domain.ConditionRegistry;
 import me.ogali.xenithlibrary.utilities.Chat;
 import org.bukkit.Bukkit;
@@ -54,9 +55,16 @@ public final class XenithLibrary extends JavaPlugin {
     private void registerCommands() {
         PaperCommandManager cm = new PaperCommandManager(this);
         cm.setFormat(MessageType.SYNTAX, ChatColor.RED, ChatColor.RED);
+
+        // Action command
         cm.registerCommand(new ActionCommands());
         cm.getCommandCompletions().registerCompletion("actions", c ->
                 ActionRegistry.allInstances().keySet().stream().toList());
+
+        // Condition command
+        cm.registerCommand(new ConditionCommands());
+        cm.getCommandCompletions().registerCompletion("conditions", c ->
+                ConditionRegistry.allInstances().keySet().stream().toList());
     }
 
     private boolean checkPapi() {

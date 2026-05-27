@@ -27,6 +27,10 @@ public class ConditionFactory {
         return condition;
     }
 
+    public void removeNamed(String id) {
+        named.remove(id);
+    }
+
     public void reset() {
         named.clear();
     }

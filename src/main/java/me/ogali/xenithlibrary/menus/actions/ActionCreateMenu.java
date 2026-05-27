@@ -6,6 +6,7 @@ import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Slot;
+import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.action.domain.AbstractAction;
 import me.ogali.xenithlibrary.action.domain.ActionRegistry;
 import me.ogali.xenithlibrary.action.domain.ActionType;
@@ -13,7 +14,12 @@ import me.ogali.xenithlibrary.shared.DomainConfig;
 import me.ogali.xenithlibrary.utilities.Chat;
 import me.ogali.xenithlibrary.utilities.GuiUtil;
 import org.bukkit.Material;
+import org.bukkit.conversations.ConversationContext;
+import org.bukkit.conversations.ConversationFactory;
+import org.bukkit.conversations.Prompt;
+import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,12 +67,15 @@ public class ActionCreateMenu {
     }
 
     // -------------------------------------------------------------------------
-    // Step 2 — Fill in fields
+    // Step 2 — Fill in fields (rebuilds itself on every return from edit)
     // -------------------------------------------------------------------------
 
     private static void openFieldEditor(Player player, ActionType type, String id) {
         AbstractAction action = buildDefault(type, id);
+        openFieldEditorWithAction(player, action, type);
+    }
 
+    static void openFieldEditorWithAction(Player player, AbstractAction action, ActionType type) {
         ChestGui gui = new ChestGui(4, "Create Action — Configure");
         gui.setOnTopClick(e -> e.setCancelled(true));
 
@@ -77,22 +86,26 @@ public class ActionCreateMenu {
 
         StaticPane fields = new StaticPane(7, 2);
 
-        var serialized = action.serialize();
-        int slot = 0;
-        for (var entry : serialized.entrySet()) {
-            if (entry.getKey().equals("type")) continue;
-            String fieldKey = entry.getKey();
+        // Collect to list for stable index — fixes slot counter bug
+        List<Map.Entry<String, Object>> entries = action.serialize().entrySet().stream()
+                .filter(e -> !e.getKey().equals("type"))
+                .toList();
+
+        for (int i = 0; i < entries.size(); i++) {
+            String key = entries.get(i).getKey();
+            Object value = entries.get(i).getValue();
+
             fields.addItem(new GuiItem(
                     GuiUtil.item(
                             Material.PAPER,
-                            "&f" + fieldKey,
-                            "&7Value: &e" + entry.getValue(),
+                            "&f" + key,
+                            "&7Value: &e" + value,
                             "",
                             "&aClick to edit"
                     ),
-                    e -> ActionEditMenu.show(player, action, fieldKey, gui)
-            ), slot % 7, slot / 7);
-            slot++;
+                    // Inline conversation — never opens ActionEditMenu
+                    e -> startFieldConversation(player, action, type, key)
+            ), i % 7, i / 7);
         }
 
         gui.addPane(Slot.fromXY(1, 1), fields);
@@ -102,7 +115,7 @@ public class ActionCreateMenu {
         // Back — return to type picker
         bottom.addItem(new GuiItem(
                 GuiUtil.back(),
-                e -> show(player, id)
+                e -> show(player, action.getId())
         ), 0, 0);
 
         // Save
@@ -110,20 +123,66 @@ public class ActionCreateMenu {
                 GuiUtil.item(
                         Material.EMERALD,
                         "&a&lSave Action",
-                        "&7ID: &e" + id,
+                        "&7ID: &e" + action.getId(),
                         "&7Type: &e" + type.key(),
                         "",
                         "&aClick to save."
                 ),
                 e -> {
                     ActionRegistry.register(action);
-                    Chat.tellFormatted(player, "&aAction &e%s &acreated successfully!", id);
+                    Chat.tellFormatted(player, "&aAction &e%s &acreated successfully!", action.getId());
                     ActionListMenu.show(player);
                 }
         ), 8, 0);
 
         gui.addPane(Slot.fromXY(0, 3), bottom);
         gui.show(player);
+    }
+
+    // -------------------------------------------------------------------------
+    // Inline field edit — bypasses ActionEditMenu entirely during creation
+    // -------------------------------------------------------------------------
+
+    private static void startFieldConversation(Player player, AbstractAction action,
+                                               ActionType type, String field) {
+        player.closeInventory();
+
+        new ConversationFactory(XenithLibrary.getInstance())
+                .withModality(false)
+                .withEscapeSequence("cancel")
+                .withTimeout(60)
+                .withFirstPrompt(new StringPrompt() {
+
+                    @Override
+                    public @NotNull String getPromptText(@NotNull ConversationContext context) {
+                        return Chat.colorize(
+                                "&aEnter a new value for &e" + field + "&a:\n" +
+                                        "&7Type &ccancel &7to abort."
+                        );
+                    }
+
+                    @Override
+                    public Prompt acceptInput(@NotNull ConversationContext context, String input) {
+                        try {
+                            action.applyEdit(field, input);
+                            Chat.tellFormatted(player, "&aUpdated &e%s &ato: &f%s", field, input);
+                        } catch (Exception ex) {
+                            Chat.tellFormatted(player,
+                                    "&cInvalid value for &e%s&c: &f%s", field, ex.getMessage());
+                        }
+                        // Rebuild creation menu fresh — papers now show updated values
+                        openFieldEditorWithAction(player, action, type);
+                        return Prompt.END_OF_CONVERSATION;
+                    }
+                })
+                .addConversationAbandonedListener(event -> {
+                    if (!event.gracefulExit()) {
+                        Chat.tell(player, "&cEdit cancelled.");
+                        openFieldEditorWithAction(player, action, type);
+                    }
+                })
+                .buildConversation(player)
+                .begin();
     }
 
     // -------------------------------------------------------------------------

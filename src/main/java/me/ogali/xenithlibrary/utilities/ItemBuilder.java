@@ -112,12 +112,6 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder glowing() {
-        meta.addEnchant(Enchantment.DURABILITY, 1, true);
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        return this;
-    }
-
     public ItemStack build() {
         meta.setLore(lore);
         enchants.forEach(item::addUnsafeEnchantment);

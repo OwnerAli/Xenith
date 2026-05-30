@@ -10,6 +10,8 @@ import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.conditions.domain.AbstractCondition;
 import me.ogali.xenithlibrary.conditions.domain.ConditionRegistry;
 import me.ogali.xenithlibrary.conditions.domain.ConditionType;
+import me.ogali.xenithlibrary.menus.editors.FieldInput;
+import me.ogali.xenithlibrary.menus.editors.FieldInputs;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import me.ogali.xenithlibrary.utilities.Chat;
 import me.ogali.xenithlibrary.utilities.GuiUtil;
@@ -95,19 +97,25 @@ public class ConditionCreateMenu {
         for (int i = 0; i < entries.size(); i++) {
             String key = entries.get(i).getKey();
             Object value = entries.get(i).getValue();
-            int finalI = i;
+
+            // Ask the action how this field wants to be edited
+            FieldInput input = FieldInputs.find(condition, key);
 
             fields.addItem(new GuiItem(
                     GuiUtil.item(
-                            Material.PAPER,
+                            input.icon(),                          // icon reflects input type
                             "&f" + key,
                             "&7Value: &e" + value,
                             "",
-                            "&aClick to edit"
+                            input.hint()                           // hint reflects input type
                     ),
-                    // Pass gui as previousGui AND a callback to reopen this menu fresh after edit
-                    e -> openEditAndReturn(player, condition, type, key, gui)
-            ), finalI % 7, finalI / 7);
+                    e -> FieldInputs.resolve(
+                            player,
+                            condition,
+                            key,
+                            () -> openFieldEditorWithCondition(player, condition, type) // rebuild fresh
+                    )
+            ), i % 7, i / 7);
         }
 
         gui.addPane(Slot.fromXY(1, 1), fields);

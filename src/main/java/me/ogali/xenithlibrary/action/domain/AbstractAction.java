@@ -3,31 +3,29 @@ package me.ogali.xenithlibrary.action.domain;
 import lombok.Getter;
 import lombok.Setter;
 import me.ogali.xenithlibrary.XenithLibrary;
+import me.ogali.xenithlibrary.menus.editors.FieldInputProvider;
+import me.ogali.xenithlibrary.shared.Persistable;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Getter
 @Setter
-public abstract class AbstractAction implements Action {
+public abstract class AbstractAction implements Action, Persistable, FieldInputProvider {
     private String id;
     private String typeKey;
     private double chance = 100.0;
 
-    /**
-     * Subclasses call this at the top of execute() to respect the chance field.
-     * <p>
-     * Usage:
-     * if (!rolledSuccessfully()) return;
-     */
+    @Override
+    public void persist() {
+        ActionRegistry.register(this);
+    }
+
     protected boolean rolledSuccessfully() {
         return XenithLibrary.getInstance().getRandom().nextDouble() * 100.0 <= chance;
     }
 
-    /**
-     * Serializes this action to a map for persistence.
-     * Subclasses override and call super() to include base fields, then add their own.
-     */
+    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("type", typeKey);
@@ -40,6 +38,7 @@ public abstract class AbstractAction implements Action {
      * Subclasses override to handle their own fields.
      * Base class handles "chance".
      */
+    @Override
     public void applyEdit(String field, String value) {
         if (field.equals("chance")) {
             setChance(Double.parseDouble(value));

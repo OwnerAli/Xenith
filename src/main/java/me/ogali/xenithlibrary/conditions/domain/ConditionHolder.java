@@ -8,7 +8,6 @@ import java.util.List;
  * All conditions must pass for checkAll() to return true.
  */
 public final class ConditionHolder {
-
     private final List<Condition> conditions;
 
     public ConditionHolder(List<Condition> conditions) {

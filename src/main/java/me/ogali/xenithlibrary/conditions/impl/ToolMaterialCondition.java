@@ -22,12 +22,9 @@ public class ToolMaterialCondition extends AbstractCondition {
 
     @Override
     public boolean test(ConditionContext context) {
-        if (!(context.getBukkitEvent() instanceof BlockBreakEvent event)) {
-            return false;
-        }
+        if (!(context.getBukkitEvent() instanceof BlockBreakEvent event)) return false;
 
         Player player = event.getPlayer();
-
         Material held = hand.getItem(player).getType();
 
         return evaluate(held.name(), material.toUpperCase());
@@ -45,9 +42,7 @@ public class ToolMaterialCondition extends AbstractCondition {
     public void applyEdit(String field, String value) {
         switch (field) {
             case "material" -> this.material = value.toUpperCase();
-
             case "hand" -> this.hand = HandSlot.valueOf(value.toUpperCase());
-
             default -> super.applyEdit(field, value);
         }
     }

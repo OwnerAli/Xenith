@@ -6,20 +6,15 @@ import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Slot;
-import me.ogali.xenithlibrary.XenithLibrary;
 import me.ogali.xenithlibrary.action.domain.AbstractAction;
 import me.ogali.xenithlibrary.action.domain.ActionRegistry;
 import me.ogali.xenithlibrary.action.domain.ActionType;
+import me.ogali.xenithlibrary.menus.editors.FieldInput;
+import me.ogali.xenithlibrary.menus.editors.FieldInputs;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import me.ogali.xenithlibrary.utilities.Chat;
 import me.ogali.xenithlibrary.utilities.GuiUtil;
-import org.bukkit.Material;
-import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.ConversationFactory;
-import org.bukkit.conversations.Prompt;
-import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +62,7 @@ public class ActionCreateMenu {
     }
 
     // -------------------------------------------------------------------------
-    // Step 2 — Fill in fields (rebuilds itself on every return from edit)
+    // Step 2 — Configure fields
     // -------------------------------------------------------------------------
 
     private static void openFieldEditor(Player player, ActionType type, String id) {
@@ -86,7 +81,6 @@ public class ActionCreateMenu {
 
         StaticPane fields = new StaticPane(7, 2);
 
-        // Collect to list for stable index — fixes slot counter bug
         List<Map.Entry<String, Object>> entries = action.serialize().entrySet().stream()
                 .filter(e -> !e.getKey().equals("type"))
                 .toList();
@@ -95,16 +89,23 @@ public class ActionCreateMenu {
             String key = entries.get(i).getKey();
             Object value = entries.get(i).getValue();
 
+            // Ask the action how this field wants to be edited
+            FieldInput input = FieldInputs.find(action, key);
+
             fields.addItem(new GuiItem(
                     GuiUtil.item(
-                            Material.PAPER,
+                            input.icon(),                          // icon reflects input type
                             "&f" + key,
                             "&7Value: &e" + value,
                             "",
-                            "&aClick to edit"
+                            input.hint()                           // hint reflects input type
                     ),
-                    // Inline conversation — never opens ActionEditMenu
-                    e -> startFieldConversation(player, action, type, key)
+                    e -> FieldInputs.resolve(
+                            player,
+                            action,
+                            key,
+                            () -> openFieldEditorWithAction(player, action, type) // rebuild fresh
+                    )
             ), i % 7, i / 7);
         }
 
@@ -112,16 +113,14 @@ public class ActionCreateMenu {
 
         StaticPane bottom = new StaticPane(9, 1);
 
-        // Back — return to type picker
         bottom.addItem(new GuiItem(
                 GuiUtil.back(),
                 e -> show(player, action.getId())
         ), 0, 0);
 
-        // Save
         bottom.addItem(new GuiItem(
                 GuiUtil.item(
-                        Material.EMERALD,
+                        org.bukkit.Material.EMERALD,
                         "&a&lSave Action",
                         "&7ID: &e" + action.getId(),
                         "&7Type: &e" + type.key(),
@@ -137,52 +136,6 @@ public class ActionCreateMenu {
 
         gui.addPane(Slot.fromXY(0, 3), bottom);
         gui.show(player);
-    }
-
-    // -------------------------------------------------------------------------
-    // Inline field edit — bypasses ActionEditMenu entirely during creation
-    // -------------------------------------------------------------------------
-
-    private static void startFieldConversation(Player player, AbstractAction action,
-                                               ActionType type, String field) {
-        player.closeInventory();
-
-        new ConversationFactory(XenithLibrary.getInstance())
-                .withModality(false)
-                .withEscapeSequence("cancel")
-                .withTimeout(60)
-                .withFirstPrompt(new StringPrompt() {
-
-                    @Override
-                    public @NotNull String getPromptText(@NotNull ConversationContext context) {
-                        return Chat.colorize(
-                                "&aEnter a new value for &e" + field + "&a:\n" +
-                                        "&7Type &ccancel &7to abort."
-                        );
-                    }
-
-                    @Override
-                    public Prompt acceptInput(@NotNull ConversationContext context, String input) {
-                        try {
-                            action.applyEdit(field, input);
-                            Chat.tellFormatted(player, "&aUpdated &e%s &ato: &f%s", field, input);
-                        } catch (Exception ex) {
-                            Chat.tellFormatted(player,
-                                    "&cInvalid value for &e%s&c: &f%s", field, ex.getMessage());
-                        }
-                        // Rebuild creation menu fresh — papers now show updated values
-                        openFieldEditorWithAction(player, action, type);
-                        return Prompt.END_OF_CONVERSATION;
-                    }
-                })
-                .addConversationAbandonedListener(event -> {
-                    if (!event.gracefulExit()) {
-                        Chat.tell(player, "&cEdit cancelled.");
-                        openFieldEditorWithAction(player, action, type);
-                    }
-                })
-                .buildConversation(player)
-                .begin();
     }
 
     // -------------------------------------------------------------------------

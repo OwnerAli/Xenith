@@ -71,20 +71,6 @@ public class Chat {
         return ignoreColorCodes ? strip(text).length() : text.length();
     }
 
-    public static String listToString(List<String> strings) {
-        String delimiter = "ꨀ";
-
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < strings.size(); i++) {
-            sb.append(strings.get(i));
-            if (i != strings.size() - 1) {
-                sb.append(delimiter);
-            }
-        }
-        return sb.toString();
-    }
-
     public static List<String> stringToList(String string) {
         String delimiter = "ꨀ";
         return new ArrayList<>(List.of(string.split(delimiter)));

@@ -6,9 +6,9 @@ import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Slot;
-import me.ogali.xenithlibrary.action.domain.AbstractAction;
-import me.ogali.xenithlibrary.action.domain.ActionContext;
-import me.ogali.xenithlibrary.action.domain.ActionRegistry;
+import me.ogali.xenithlibrary.actions.domain.AbstractAction;
+import me.ogali.xenithlibrary.actions.domain.ActionContext;
+import me.ogali.xenithlibrary.actions.domain.ActionRegistry;
 import me.ogali.xenithlibrary.utilities.Chat;
 import me.ogali.xenithlibrary.utilities.GuiUtil;
 import org.bukkit.Material;
@@ -47,7 +47,7 @@ public class ActionSettingsMenu {
                             "",
                             "&aClick to edit"
                     ),
-                    e -> ActionEditMenu.show(player, action, key, gui)
+                    _ -> ActionEditMenu.show(player, action, key, gui)
             ), i % 7, i / 7);
         }
 
@@ -57,7 +57,7 @@ public class ActionSettingsMenu {
 
         bottom.addItem(new GuiItem(
                 GuiUtil.back(),
-                e -> {
+                _ -> {
                     if (previousGui != null) previousGui.show(player);
                     else ActionListMenu.show(player);
                 }
@@ -66,7 +66,7 @@ public class ActionSettingsMenu {
         bottom.addItem(new GuiItem(
                 GuiUtil.item(Material.LIME_DYE, "&a&lTest Action",
                         "&7Execute this action against yourself."),
-                e -> {
+                _ -> {
                     action.execute(ActionContext.of(player));
                     Chat.tellFormatted(player, "&aExecuted action: &e%s", action.getId());
                 }
@@ -75,7 +75,7 @@ public class ActionSettingsMenu {
         bottom.addItem(new GuiItem(
                 GuiUtil.item(Material.RED_DYE, "&c&lDelete Action",
                         "&7This action will be permanently deleted."),
-                e -> {
+                _ -> {
                     ActionRegistry.delete(action.getId());
                     player.closeInventory();
                     Chat.tellFormatted(player, "&cAction &e%s &cdeleted.", action.getId());

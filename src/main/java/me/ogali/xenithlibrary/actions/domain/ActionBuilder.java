@@ -1,4 +1,4 @@
-package me.ogali.xenithlibrary.action.domain;
+package me.ogali.xenithlibrary.actions.domain;
 
 import me.ogali.xenithlibrary.shared.DomainConfig;
 

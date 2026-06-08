@@ -8,13 +8,13 @@ import java.util.List;
  * All conditions must pass for checkAll() to return true.
  */
 public final class ConditionHolder {
-    private final List<Condition> conditions;
+    private final List<AbstractCondition> conditions;
 
-    public ConditionHolder(List<Condition> conditions) {
+    public ConditionHolder(List<AbstractCondition> conditions) {
         this.conditions = new ArrayList<>(conditions);
     }
 
-    public ConditionHolder(Condition... conditions) {
+    public ConditionHolder(AbstractCondition... conditions) {
         this(List.of(conditions));
     }
 
@@ -45,5 +45,17 @@ public final class ConditionHolder {
 
     public boolean isEmpty() {
         return conditions.isEmpty();
+    }
+
+    public List<String> toIdList() {
+        return conditions.stream().map(AbstractCondition::getId).toList();
+    }
+
+    public ConditionHolder fromIdList(List<String> ids) {
+        return new ConditionHolder(
+                ids.stream()
+                        .map(ConditionRegistry::get)
+                        .toList()
+        );
     }
 }

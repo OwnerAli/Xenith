@@ -1,53 +1,51 @@
-package me.ogali.xenithlibrary.action.impl;
+package me.ogali.xenithlibrary.actions.impl;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.ogali.xenithlibrary.XenithLibrary;
-import me.ogali.xenithlibrary.action.domain.AbstractAction;
-import me.ogali.xenithlibrary.action.domain.ActionContext;
+import me.ogali.xenithlibrary.actions.domain.AbstractAction;
+import me.ogali.xenithlibrary.actions.domain.ActionContext;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import me.ogali.xenithlibrary.utilities.Chat;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 
-public class PlayerActionBarAction extends AbstractAction {
-    private String message;
+public class PlayerCommandAction extends AbstractAction {
+    private String command;
 
-    public PlayerActionBarAction(String message) {
-        this.message = message;
+    public PlayerCommandAction(String command) {
+        this.command = command;
     }
 
     @Override
     public void execute(ActionContext context) {
         if (!rolledSuccessfully()) return;
         if (context.getPlayer() == null) return;
-        String resolved = message;
+        String resolved = command;
         if (XenithLibrary.isPapiEnabled()) {
             resolved = PlaceholderAPI.setPlaceholders(context.getPlayer(), resolved);
         }
-        context.getPlayer().spigot().sendMessage(
-                ChatMessageType.ACTION_BAR,
-                new TextComponent(Chat.colorize(resolved))
-        );
+        final String finalResolved = Chat.strip(resolved);
+        Bukkit.getScheduler().runTask(XenithLibrary.getInstance(),
+            () -> context.getPlayer().performCommand(finalResolved));
     }
 
     @Override
     public java.util.Map<String, Object> serialize() {
         java.util.Map<String, Object> data = new java.util.LinkedHashMap<>(super.serialize());
-        data.put("message", message);
+        data.put("command", command);
         return data;
     }
 
     @Override
     public void applyEdit(String field, String value) {
         switch (field) {
-            case "message" -> this.message = value;
+            case "command" -> this.command = value;
             default -> super.applyEdit(field, value);
         }
     }
 
     public static AbstractAction fromConfig(DomainConfig config) {
-        String message = config.getString("message", "");
-        PlayerActionBarAction action = new PlayerActionBarAction(message);
+        String command = config.getString("command", "");
+        PlayerCommandAction action = new PlayerCommandAction(command);
         action.setChance(config.getDouble("chance", 100.0));
         return action;
     }

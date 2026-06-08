@@ -7,8 +7,8 @@ import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import me.ogali.xenithlibrary.XenithLibrary;
-import me.ogali.xenithlibrary.action.domain.AbstractAction;
-import me.ogali.xenithlibrary.action.domain.ActionRegistry;
+import me.ogali.xenithlibrary.actions.domain.AbstractAction;
+import me.ogali.xenithlibrary.actions.domain.ActionRegistry;
 import me.ogali.xenithlibrary.utilities.Chat;
 import me.ogali.xenithlibrary.utilities.GuiUtil;
 import org.bukkit.Material;
@@ -48,7 +48,7 @@ public class ActionEditMenu {
                         "&a&lEdit in Chat",
                         "&7Close this menu and type the new value."
                 ),
-                e -> {
+                _ -> {
                     player.closeInventory();
                     startConversation(player, action, field, previousGui);
                 }
@@ -60,7 +60,7 @@ public class ActionEditMenu {
                         "&c&lCancel",
                         "&7Go back without changes."
                 ),
-                e -> ActionSettingsMenu.show(player, action, previousGui)
+                _ -> ActionSettingsMenu.show(player, action, previousGui)
         ), 5, 0);
 
         gui.addPane(Slot.fromXY(1, 1), content);
@@ -69,7 +69,7 @@ public class ActionEditMenu {
         StaticPane bottom = new StaticPane(9, 1);
         bottom.addItem(new GuiItem(
                 GuiUtil.back(),
-                e -> ActionSettingsMenu.show(player, action, previousGui)
+                _ -> ActionSettingsMenu.show(player, action, previousGui)
         ), 0, 0);
 
         gui.addPane(Slot.fromXY(0, 2), bottom);

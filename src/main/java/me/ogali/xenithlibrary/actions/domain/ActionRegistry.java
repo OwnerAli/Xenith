@@ -1,7 +1,7 @@
-package me.ogali.xenithlibrary.action.domain;
+package me.ogali.xenithlibrary.actions.domain;
 
 import me.ogali.xenithlibrary.XenithLibrary;
-import me.ogali.xenithlibrary.action.impl.*;
+import me.ogali.xenithlibrary.actions.impl.*;
 import me.ogali.xenithlibrary.files.impl.ActionsFile;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import org.bukkit.Material;
@@ -14,6 +14,20 @@ public final class ActionRegistry {
     private static final Map<String, ActionType> types = new HashMap<>();
     private static final Map<String, AbstractAction> instances = new HashMap<>();
     private static final ActionsFile file = new ActionsFile();
+
+    static {
+        registerType(new ActionType("COMPOSITE", CompositeAction::fromConfig, Material.COPPER_CHAIN));
+        registerType(new ActionType("CANCEL_EVENT", CancelEventAction::fromConfig, Material.BARRIER));
+        registerType(new ActionType("UNCANCEL_EVENT", UnCancelEventAction::fromConfig, Material.LIME_STAINED_GLASS));
+        registerType(new ActionType("BROADCAST", BroadcastAction::fromConfig, Material.PAPER));
+        registerType(new ActionType("CONSOLE_COMMAND", ConsoleCommandAction::fromConfig, Material.COMMAND_BLOCK));
+        registerType(new ActionType("PLAYER_COMMAND", PlayerCommandAction::fromConfig, Material.COMMAND_BLOCK_MINECART));
+        registerType(new ActionType("PLAYER_MESSAGE", PlayerMessageAction::fromConfig, Material.WRITABLE_BOOK));
+        registerType(new ActionType("PLAYER_SOUND", PlayerSoundAction::fromConfig, Material.NOTE_BLOCK));
+        registerType(new ActionType("GLOBAL_SOUND", GlobalSoundAction::fromConfig, Material.JUKEBOX));
+        registerType(new ActionType("PLAYER_ACTION_BAR", PlayerActionBarAction::fromConfig, Material.NAME_TAG));
+        registerType(new ActionType("PLAYER_TITLE", PlayerTitleAction::fromConfig, Material.BOOK));
+    }
 
     private ActionRegistry() {
     }
@@ -110,18 +124,5 @@ public final class ActionRegistry {
 
     private static void log(String message) {
         XenithLibrary.getInstance().getLogger().warning(message);
-    }
-
-    static {
-        registerType(new ActionType("CANCEL_EVENT", CancelEventAction::fromConfig, Material.BARRIER));
-        registerType(new ActionType("UNCANCEL_EVENT", UnCancelEventAction::fromConfig, Material.LIME_STAINED_GLASS));
-        registerType(new ActionType("BROADCAST", BroadcastAction::fromConfig, Material.PAPER));
-        registerType(new ActionType("CONSOLE_COMMAND", ConsoleCommandAction::fromConfig, Material.COMMAND_BLOCK));
-        registerType(new ActionType("PLAYER_COMMAND", PlayerCommandAction::fromConfig, Material.COMMAND_BLOCK_MINECART));
-        registerType(new ActionType("PLAYER_MESSAGE", PlayerMessageAction::fromConfig, Material.WRITABLE_BOOK));
-        registerType(new ActionType("PLAYER_SOUND", PlayerSoundAction::fromConfig, Material.NOTE_BLOCK));
-        registerType(new ActionType("GLOBAL_SOUND", GlobalSoundAction::fromConfig, Material.JUKEBOX));
-        registerType(new ActionType("PLAYER_ACTION_BAR", PlayerActionBarAction::fromConfig, Material.NAME_TAG));
-        registerType(new ActionType("PLAYER_TITLE", PlayerTitleAction::fromConfig, Material.BOOK));
     }
 }

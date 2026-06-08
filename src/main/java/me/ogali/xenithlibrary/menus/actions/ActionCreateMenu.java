@@ -6,9 +6,9 @@ import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Slot;
-import me.ogali.xenithlibrary.action.domain.AbstractAction;
-import me.ogali.xenithlibrary.action.domain.ActionRegistry;
-import me.ogali.xenithlibrary.action.domain.ActionType;
+import me.ogali.xenithlibrary.actions.domain.AbstractAction;
+import me.ogali.xenithlibrary.actions.domain.ActionRegistry;
+import me.ogali.xenithlibrary.actions.domain.ActionType;
 import me.ogali.xenithlibrary.menus.editors.FieldInput;
 import me.ogali.xenithlibrary.menus.editors.FieldInputs;
 import me.ogali.xenithlibrary.shared.DomainConfig;
@@ -48,14 +48,14 @@ public class ActionCreateMenu {
                             "&7Click to create a &e" + type.key() + " &7action",
                             "&7ID: &e" + id
                     ),
-                    e -> openFieldEditor(player, type, id)
+                    _ -> openFieldEditor(player, type, id)
             ), i % 7, i / 7);
         }
 
         gui.addPane(Slot.fromXY(1, 1), content);
 
         StaticPane bottom = new StaticPane(9, 1);
-        bottom.addItem(new GuiItem(GuiUtil.back(), e -> player.closeInventory()), 0, 0);
+        bottom.addItem(new GuiItem(GuiUtil.back(), _ -> player.closeInventory()), 0, 0);
         gui.addPane(Slot.fromXY(0, 3), bottom);
 
         gui.show(player);
@@ -100,7 +100,7 @@ public class ActionCreateMenu {
                             "",
                             input.hint()                           // hint reflects input type
                     ),
-                    e -> FieldInputs.resolve(
+                    _ -> FieldInputs.resolve(
                             player,
                             action,
                             key,
@@ -115,7 +115,7 @@ public class ActionCreateMenu {
 
         bottom.addItem(new GuiItem(
                 GuiUtil.back(),
-                e -> show(player, action.getId())
+                _ -> show(player, action.getId())
         ), 0, 0);
 
         bottom.addItem(new GuiItem(
@@ -127,7 +127,7 @@ public class ActionCreateMenu {
                         "",
                         "&aClick to save."
                 ),
-                e -> {
+                _ -> {
                     ActionRegistry.register(action);
                     Chat.tellFormatted(player, "&aAction &e%s &acreated successfully!", action.getId());
                     ActionListMenu.show(player);

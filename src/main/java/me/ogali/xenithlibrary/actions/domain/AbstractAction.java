@@ -1,4 +1,4 @@
-package me.ogali.xenithlibrary.action.domain;
+package me.ogali.xenithlibrary.actions.domain;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +25,10 @@ public abstract class AbstractAction implements Action, Persistable, FieldInputP
         return XenithLibrary.getInstance().getRandom().nextDouble() * 100.0 <= chance;
     }
 
+    /**
+     * Serialize data to file
+     * GUI Uses this to define editable fields.
+     */
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> data = new LinkedHashMap<>();

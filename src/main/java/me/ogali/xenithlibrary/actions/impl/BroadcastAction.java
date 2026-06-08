@@ -1,35 +1,33 @@
-package me.ogali.xenithlibrary.action.impl;
+package me.ogali.xenithlibrary.actions.impl;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.ogali.xenithlibrary.XenithLibrary;
-import me.ogali.xenithlibrary.action.domain.AbstractAction;
-import me.ogali.xenithlibrary.action.domain.ActionContext;
+import me.ogali.xenithlibrary.actions.domain.AbstractAction;
+import me.ogali.xenithlibrary.actions.domain.ActionContext;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import me.ogali.xenithlibrary.utilities.Chat;
+import org.bukkit.Bukkit;
 
-public class PlayerMessageAction extends AbstractAction {
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class BroadcastAction extends AbstractAction {
     private String message;
 
-    public PlayerMessageAction(String message) {
+    public BroadcastAction(String message) {
         this.message = message;
     }
 
     @Override
     public void execute(ActionContext context) {
         if (!rolledSuccessfully()) return;
-        if (context.getPlayer() == null) return;
+
         String resolved = message;
-        if (XenithLibrary.isPapiEnabled()) {
+        if (XenithLibrary.isPapiEnabled() && context.getPlayer() != null) {
             resolved = PlaceholderAPI.setPlaceholders(context.getPlayer(), resolved);
         }
-        context.getPlayer().sendMessage(Chat.colorize(resolved));
-    }
 
-    @Override
-    public java.util.Map<String, Object> serialize() {
-        java.util.Map<String, Object> data = new java.util.LinkedHashMap<>(super.serialize());
-        data.put("message", message);
-        return data;
+        Bukkit.broadcastMessage(Chat.colorize(resolved));
     }
 
     @Override
@@ -40,9 +38,16 @@ public class PlayerMessageAction extends AbstractAction {
         }
     }
 
+    @Override
+    public Map<String, Object> serialize() {
+        Map<String, Object> data = new LinkedHashMap<>(super.serialize());
+        data.put("message", message);
+        return data;
+    }
+
     public static AbstractAction fromConfig(DomainConfig config) {
         String message = config.getString("message", "");
-        PlayerMessageAction action = new PlayerMessageAction(message);
+        BroadcastAction action = new BroadcastAction(message);
         action.setChance(config.getDouble("chance", 100.0));
         return action;
     }

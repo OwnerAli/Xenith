@@ -1,7 +1,7 @@
-package me.ogali.xenithlibrary.action.impl;
+package me.ogali.xenithlibrary.actions.impl;
 
-import me.ogali.xenithlibrary.action.domain.AbstractAction;
-import me.ogali.xenithlibrary.action.domain.ActionContext;
+import me.ogali.xenithlibrary.actions.domain.AbstractAction;
+import me.ogali.xenithlibrary.actions.domain.ActionContext;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import org.bukkit.event.Cancellable;
 

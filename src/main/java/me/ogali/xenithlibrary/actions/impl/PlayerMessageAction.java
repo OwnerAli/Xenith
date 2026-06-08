@@ -1,50 +1,48 @@
-package me.ogali.xenithlibrary.action.impl;
+package me.ogali.xenithlibrary.actions.impl;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.ogali.xenithlibrary.XenithLibrary;
-import me.ogali.xenithlibrary.action.domain.AbstractAction;
-import me.ogali.xenithlibrary.action.domain.ActionContext;
+import me.ogali.xenithlibrary.actions.domain.AbstractAction;
+import me.ogali.xenithlibrary.actions.domain.ActionContext;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import me.ogali.xenithlibrary.utilities.Chat;
-import org.bukkit.Bukkit;
 
-public class ConsoleCommandAction extends AbstractAction {
-    private String command;
+public class PlayerMessageAction extends AbstractAction {
+    private String message;
 
-    public ConsoleCommandAction(String command) {
-        this.command = command;
+    public PlayerMessageAction(String message) {
+        this.message = message;
     }
 
     @Override
     public void execute(ActionContext context) {
         if (!rolledSuccessfully()) return;
-        String resolved = command;
-        if (XenithLibrary.isPapiEnabled() && context.getPlayer() != null) {
+        if (context.getPlayer() == null) return;
+        String resolved = message;
+        if (XenithLibrary.isPapiEnabled()) {
             resolved = PlaceholderAPI.setPlaceholders(context.getPlayer(), resolved);
         }
-        final String command = Chat.strip(resolved);
-        Bukkit.getScheduler().runTask(XenithLibrary.getInstance(),
-                () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
+        context.getPlayer().sendMessage(Chat.colorize(resolved));
     }
 
     @Override
     public java.util.Map<String, Object> serialize() {
         java.util.Map<String, Object> data = new java.util.LinkedHashMap<>(super.serialize());
-        data.put("command", command);
+        data.put("message", message);
         return data;
     }
 
     @Override
     public void applyEdit(String field, String value) {
         switch (field) {
-            case "command" -> this.command = value;
+            case "message" -> this.message = value;
             default -> super.applyEdit(field, value);
         }
     }
 
     public static AbstractAction fromConfig(DomainConfig config) {
-        String command = config.getString("command", "");
-        ConsoleCommandAction action = new ConsoleCommandAction(command);
+        String message = config.getString("message", "");
+        PlayerMessageAction action = new PlayerMessageAction(message);
         action.setChance(config.getDouble("chance", 100.0));
         return action;
     }

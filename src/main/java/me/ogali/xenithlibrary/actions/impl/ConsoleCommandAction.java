@@ -1,31 +1,30 @@
-package me.ogali.xenithlibrary.action.impl;
+package me.ogali.xenithlibrary.actions.impl;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.ogali.xenithlibrary.XenithLibrary;
-import me.ogali.xenithlibrary.action.domain.AbstractAction;
-import me.ogali.xenithlibrary.action.domain.ActionContext;
+import me.ogali.xenithlibrary.actions.domain.AbstractAction;
+import me.ogali.xenithlibrary.actions.domain.ActionContext;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import me.ogali.xenithlibrary.utilities.Chat;
 import org.bukkit.Bukkit;
 
-public class PlayerCommandAction extends AbstractAction {
+public class ConsoleCommandAction extends AbstractAction {
     private String command;
 
-    public PlayerCommandAction(String command) {
+    public ConsoleCommandAction(String command) {
         this.command = command;
     }
 
     @Override
     public void execute(ActionContext context) {
         if (!rolledSuccessfully()) return;
-        if (context.getPlayer() == null) return;
         String resolved = command;
-        if (XenithLibrary.isPapiEnabled()) {
+        if (XenithLibrary.isPapiEnabled() && context.getPlayer() != null) {
             resolved = PlaceholderAPI.setPlaceholders(context.getPlayer(), resolved);
         }
-        final String finalResolved = Chat.strip(resolved);
+        final String command = Chat.strip(resolved);
         Bukkit.getScheduler().runTask(XenithLibrary.getInstance(),
-            () -> context.getPlayer().performCommand(finalResolved));
+                () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
     }
 
     @Override
@@ -45,7 +44,7 @@ public class PlayerCommandAction extends AbstractAction {
 
     public static AbstractAction fromConfig(DomainConfig config) {
         String command = config.getString("command", "");
-        PlayerCommandAction action = new PlayerCommandAction(command);
+        ConsoleCommandAction action = new ConsoleCommandAction(command);
         action.setChance(config.getDouble("chance", 100.0));
         return action;
     }

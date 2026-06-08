@@ -12,17 +12,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class ConditionRegistry {
-
     private static final Map<String, ConditionType> types = new HashMap<>();
     private static final Map<String, AbstractCondition> instances = new HashMap<>();
-
     private static final ConditionsFile file = new ConditionsFile();
-    private static final ConditionFactory factory = new ConditionFactory();
-
-    private ConditionRegistry() {
-    }
 
     static {
+        registerType(new ConditionType("COMPOSITE", CompositeCondition::fromConfig, Material.IRON_CHAIN));
         registerType(new ConditionType("BLOCK_TYPE", BlockTypeCondition::fromConfig, Material.GRASS_BLOCK));
         registerType(new ConditionType("BLOCK_AGE", BlockAgeCondition::fromConfig, Material.CLOCK));
         registerType(new ConditionType("BLOCK_BIOME", BlockBiomeCondition::fromConfig, Material.FERN));
@@ -44,9 +39,8 @@ public final class ConditionRegistry {
         registerType(new ConditionType("PLACEHOLDER", PlaceholderCondition::fromConfig, Material.ITEM_FRAME));
     }
 
-    // -------------------------------------------------------------------------
-    // Type registration
-    // -------------------------------------------------------------------------
+    private ConditionRegistry() {
+    }
 
     public static void registerType(ConditionType type) {
         String key = type.getKey().toUpperCase();
@@ -71,27 +65,11 @@ public final class ConditionRegistry {
         return types.containsKey(key.toUpperCase());
     }
 
-    // -------------------------------------------------------------------------
-    // Instance management
-    // -------------------------------------------------------------------------
-
     public static void loadFromFile() {
         Map<String, Map<String, Object>> data = file.loadAll();
         data.forEach((key, config) -> {
             try {
-                String typeKey = ((String) config.get("type")).toUpperCase();
-                ConditionType type = getType(typeKey);
-                AbstractCondition condition = type.getBuilder().build(new DomainConfig(config));
-                condition.setId(key);
-                condition.setTypeKey(typeKey);
-
-                Object evaluatorRaw = config.get("evaluator");
-                if (evaluatorRaw instanceof String evaluatorStr) {
-                    condition.setEvaluator(Evaluator.valueOf(evaluatorStr.toUpperCase()));
-                }
-
-                instances.put(key, condition);
-                factory.register(key, condition);
+                instances.put(key, parse(key, config));
             } catch (Exception e) {
                 log("Failed to load condition '" + key + "': " + e.getMessage());
             }
@@ -110,17 +88,11 @@ public final class ConditionRegistry {
 
     public static void register(AbstractCondition condition) {
         instances.put(condition.getId(), condition);
-        factory.register(condition.getId(), condition);
         file.save(condition.getId(), condition.serialize());
-    }
-
-    public static boolean isRegistered(String id) {
-        return instances.containsKey(id);
     }
 
     public static void delete(String id) {
         instances.remove(id);
-        factory.removeNamed(id); // delegates to factory — fixed method name
         file.delete(id);
     }
 
@@ -128,15 +100,37 @@ public final class ConditionRegistry {
         AbstractCondition condition = instances.get(id);
         if (condition == null) {
             throw new IllegalArgumentException(
-                    "No condition with id '" + id + "'. " +
-                            "Registered: " + instances.keySet()
+                    "No condition with id '" + id + "'. Registered: " + instances.keySet()
             );
         }
         return condition;
     }
 
-    public static ConditionFactory factory() {
-        return factory;
+    public static boolean isRegistered(String id) {
+        return instances.containsKey(id);
+    }
+
+    /**
+     * Parses a single condition config map into an AbstractCondition.
+     * Used internally during loadFromFile and by external plugins
+     * that want to build conditions programmatically.
+     */
+    public static AbstractCondition parse(String id, Map<String, Object> config) {
+        DomainConfig domainConfig = new DomainConfig(config);
+
+        String typeKey = domainConfig.getUppercaseString("type");
+        ConditionType type = getType(typeKey);
+
+        AbstractCondition condition = type.getBuilder().build(domainConfig);
+        condition.setId(id);
+        condition.setTypeKey(typeKey);
+
+        String evaluatorKey = domainConfig.getUppercaseString("evaluator");
+        if (evaluatorKey != null && !evaluatorKey.isBlank()) {
+            condition.setEvaluator(Evaluator.valueOf(evaluatorKey));
+        }
+
+        return condition;
     }
 
     public static Map<String, AbstractCondition> allInstances() {
@@ -147,13 +141,9 @@ public final class ConditionRegistry {
         return Collections.unmodifiableMap(types);
     }
 
-    /**
-     * For tests only.
-     */
     static void reset() {
         types.clear();
         instances.clear();
-        factory.reset();
     }
 
     private static void log(String message) {

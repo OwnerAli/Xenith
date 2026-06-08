@@ -7,8 +7,8 @@ import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Slot;
-import me.ogali.xenithlibrary.action.domain.AbstractAction;
-import me.ogali.xenithlibrary.action.domain.ActionRegistry;
+import me.ogali.xenithlibrary.actions.domain.AbstractAction;
+import me.ogali.xenithlibrary.actions.domain.ActionRegistry;
 import me.ogali.xenithlibrary.utilities.Chat;
 import me.ogali.xenithlibrary.utilities.GuiUtil;
 import org.bukkit.Material;
@@ -41,7 +41,7 @@ public class ActionListMenu {
         // Previous page
         bottom.addItem(new GuiItem(
                 GuiUtil.item(Material.ARROW, "&7← &fPrevious"),
-                e -> {
+                _ -> {
                     if (pages.getPage() > 0) {
                         pages.setPage(pages.getPage() - 1);
                         gui.update();
@@ -52,7 +52,7 @@ public class ActionListMenu {
         // Create new action
         bottom.addItem(new GuiItem(
                 GuiUtil.item(Material.LIME_DYE, "&a&lCreate Action", "&7Click to create a new action"),
-                e -> {
+                _ -> {
                     player.closeInventory();
                     Chat.tell(player, "&aType the &eid &afor your new action in chat:");
                 }
@@ -61,7 +61,7 @@ public class ActionListMenu {
         // Next page
         bottom.addItem(new GuiItem(
                 GuiUtil.item(Material.ARROW, "&fNext &7→"),
-                e -> {
+                _ -> {
                     if (pages.getPage() < pages.getPages() - 1) {
                         pages.setPage(pages.getPage() + 1);
                         gui.update();
@@ -78,7 +78,7 @@ public class ActionListMenu {
 
         for (AbstractAction action : ActionRegistry.allInstances().values()) {
             ItemStack icon = buildActionIcon(action);
-            items.add(new GuiItem(icon, e -> ActionSettingsMenu.show(player, action, gui)));
+            items.add(new GuiItem(icon, _ -> ActionSettingsMenu.show(player, action, gui)));
         }
 
         // Fill empty slots with filler

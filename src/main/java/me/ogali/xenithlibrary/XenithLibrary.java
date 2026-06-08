@@ -3,7 +3,7 @@ package me.ogali.xenithlibrary;
 import co.aikar.commands.MessageType;
 import co.aikar.commands.PaperCommandManager;
 import lombok.Getter;
-import me.ogali.xenithlibrary.action.domain.ActionRegistry;
+import me.ogali.xenithlibrary.actions.domain.ActionRegistry;
 import me.ogali.xenithlibrary.commands.ActionCommands;
 import me.ogali.xenithlibrary.commands.ConditionCommands;
 import me.ogali.xenithlibrary.conditions.domain.ConditionRegistry;
@@ -58,12 +58,12 @@ public final class XenithLibrary extends JavaPlugin {
 
         // Action command
         cm.registerCommand(new ActionCommands());
-        cm.getCommandCompletions().registerCompletion("actions", c ->
+        cm.getCommandCompletions().registerCompletion("actions", _ ->
                 ActionRegistry.allInstances().keySet().stream().toList());
 
         // Condition command
         cm.registerCommand(new ConditionCommands());
-        cm.getCommandCompletions().registerCompletion("conditions", c ->
+        cm.getCommandCompletions().registerCompletion("conditions", _ ->
                 ConditionRegistry.allInstances().keySet().stream().toList());
     }
 

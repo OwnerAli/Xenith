@@ -1,4 +1,4 @@
-package me.ogali.xenithlibrary.action.domain;
+package me.ogali.xenithlibrary.actions.domain;
 
 /**
  * An action that runs against a context.

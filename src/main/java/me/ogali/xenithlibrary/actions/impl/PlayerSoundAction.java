@@ -1,16 +1,16 @@
-package me.ogali.xenithlibrary.action.impl;
+package me.ogali.xenithlibrary.actions.impl;
 
-import me.ogali.xenithlibrary.action.domain.AbstractAction;
-import me.ogali.xenithlibrary.action.domain.ActionContext;
+import me.ogali.xenithlibrary.actions.domain.AbstractAction;
+import me.ogali.xenithlibrary.actions.domain.ActionContext;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import org.bukkit.Sound;
 
-public class GlobalSoundAction extends AbstractAction {
+public class PlayerSoundAction extends AbstractAction {
     private Sound sound;
     private float volume;
     private float pitch;
 
-    public GlobalSoundAction(Sound sound, float volume, float pitch) {
+    public PlayerSoundAction(Sound sound, float volume, float pitch) {
         this.sound = sound;
         this.volume = volume;
         this.pitch = pitch;
@@ -20,8 +20,7 @@ public class GlobalSoundAction extends AbstractAction {
     public void execute(ActionContext context) {
         if (!rolledSuccessfully()) return;
         if (context.getPlayer() == null) return;
-        context.getPlayer().getWorld().getPlayers()
-                .forEach(p -> p.playSound(context.getPlayer().getLocation(), sound, volume, pitch));
+        context.getPlayer().playSound(context.getPlayer().getLocation(), sound, volume, pitch);
     }
 
     @Override
@@ -47,10 +46,10 @@ public class GlobalSoundAction extends AbstractAction {
         String soundStr = config.getUppercaseString("sound");
         Sound sound = (soundStr != null && !soundStr.isBlank())
                 ? Sound.valueOf(soundStr)
-                : Sound.UI_BUTTON_CLICK;
+                : Sound.UI_BUTTON_CLICK; // sensible default
         float volume = (float) config.getDouble("volume", 1.0);
         float pitch = (float) config.getDouble("pitch", 1.0);
-        GlobalSoundAction action = new GlobalSoundAction(sound, volume, pitch);
+        PlayerSoundAction action = new PlayerSoundAction(sound, volume, pitch);
         action.setChance(config.getDouble("chance", 100.0));
         return action;
     }

@@ -1,33 +1,40 @@
-package me.ogali.xenithlibrary.action.impl;
+package me.ogali.xenithlibrary.actions.impl;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.ogali.xenithlibrary.XenithLibrary;
-import me.ogali.xenithlibrary.action.domain.AbstractAction;
-import me.ogali.xenithlibrary.action.domain.ActionContext;
+import me.ogali.xenithlibrary.actions.domain.AbstractAction;
+import me.ogali.xenithlibrary.actions.domain.ActionContext;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import me.ogali.xenithlibrary.utilities.Chat;
-import org.bukkit.Bukkit;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-public class BroadcastAction extends AbstractAction {
+public class PlayerActionBarAction extends AbstractAction {
     private String message;
 
-    public BroadcastAction(String message) {
+    public PlayerActionBarAction(String message) {
         this.message = message;
     }
 
     @Override
     public void execute(ActionContext context) {
         if (!rolledSuccessfully()) return;
-
+        if (context.getPlayer() == null) return;
         String resolved = message;
-        if (XenithLibrary.isPapiEnabled() && context.getPlayer() != null) {
+        if (XenithLibrary.isPapiEnabled()) {
             resolved = PlaceholderAPI.setPlaceholders(context.getPlayer(), resolved);
         }
+        context.getPlayer().spigot().sendMessage(
+                ChatMessageType.ACTION_BAR,
+                new TextComponent(Chat.colorize(resolved))
+        );
+    }
 
-        Bukkit.broadcastMessage(Chat.colorize(resolved));
+    @Override
+    public java.util.Map<String, Object> serialize() {
+        java.util.Map<String, Object> data = new java.util.LinkedHashMap<>(super.serialize());
+        data.put("message", message);
+        return data;
     }
 
     @Override
@@ -38,16 +45,9 @@ public class BroadcastAction extends AbstractAction {
         }
     }
 
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> data = new LinkedHashMap<>(super.serialize());
-        data.put("message", message);
-        return data;
-    }
-
     public static AbstractAction fromConfig(DomainConfig config) {
         String message = config.getString("message", "");
-        BroadcastAction action = new BroadcastAction(message);
+        PlayerActionBarAction action = new PlayerActionBarAction(message);
         action.setChance(config.getDouble("chance", 100.0));
         return action;
     }

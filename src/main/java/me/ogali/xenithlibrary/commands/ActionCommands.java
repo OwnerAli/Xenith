@@ -2,8 +2,8 @@ package me.ogali.xenithlibrary.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
-import me.ogali.xenithlibrary.action.domain.ActionContext;
-import me.ogali.xenithlibrary.action.domain.ActionRegistry;
+import me.ogali.xenithlibrary.actions.domain.ActionContext;
+import me.ogali.xenithlibrary.actions.domain.ActionRegistry;
 import me.ogali.xenithlibrary.menus.actions.ActionCreateMenu;
 import me.ogali.xenithlibrary.menus.actions.ActionListMenu;
 import me.ogali.xenithlibrary.utilities.Chat;

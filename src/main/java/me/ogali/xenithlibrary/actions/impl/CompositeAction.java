@@ -5,6 +5,7 @@ import me.ogali.xenithlibrary.actions.domain.ActionContext;
 import me.ogali.xenithlibrary.actions.domain.ActionRegistry;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +13,8 @@ import java.util.Map;
 public class CompositeAction extends AbstractAction {
     private final List<String> actionIds;
 
-    public CompositeAction(List<String> conditionIds) {
-        this.actionIds = conditionIds;
+    public CompositeAction(List<String> actionIds) {
+        this.actionIds = new ArrayList<>(actionIds);
     }
 
     public static AbstractAction fromConfig(DomainConfig config) {

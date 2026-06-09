@@ -1,11 +1,14 @@
 package me.ogali.xenithlibrary.actions.domain;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Holds a list of actions and executes them in order.
  */
+@Getter
 public final class ActionHolder {
     private final List<AbstractAction> actions;
 
@@ -39,5 +42,9 @@ public final class ActionHolder {
                         .map(ActionRegistry::get)
                         .toList()
         );
+    }
+
+    public ActionHolder copy() {
+        return new ActionHolder(actions);
     }
 }

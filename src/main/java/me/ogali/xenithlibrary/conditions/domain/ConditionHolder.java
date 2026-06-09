@@ -1,5 +1,7 @@
 package me.ogali.xenithlibrary.conditions.domain;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +9,7 @@ import java.util.List;
  * Holds a set of conditions and evaluates them together.
  * All conditions must pass for checkAll() to return true.
  */
+@Getter
 public final class ConditionHolder {
     private final List<AbstractCondition> conditions;
 
@@ -57,5 +60,9 @@ public final class ConditionHolder {
                         .map(ConditionRegistry::get)
                         .toList()
         );
+    }
+
+    public ConditionHolder copy() {
+        return new ConditionHolder(conditions);
     }
 }

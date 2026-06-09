@@ -6,16 +6,18 @@ import me.ogali.xenithlibrary.conditions.domain.ConditionRegistry;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import me.ogali.xenithlibrary.shared.Operator;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO: Fix bug with action create menu button not allowing to enter id
 public class CompositeCondition extends AbstractCondition {
     private final List<String> conditionIds;
     private Operator operator;
 
     public CompositeCondition(List<String> conditionIds, Operator operator) {
-        this.conditionIds = conditionIds;
+        this.conditionIds = new ArrayList<>(conditionIds);
         this.operator = operator;
     }
 

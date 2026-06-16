@@ -73,3 +73,9 @@ publishing {
         }
     }
 }
+
+tasks.withType(PublishToMavenLocal).configureEach {
+    dependsOn(shadowJar)
+}
+
+jar.enabled = false

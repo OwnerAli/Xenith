@@ -3,23 +3,27 @@ package me.ogali.xenithlibrary.conditions.impl;
 import me.ogali.xenithlibrary.conditions.domain.AbstractCondition;
 import me.ogali.xenithlibrary.conditions.domain.ConditionContext;
 import me.ogali.xenithlibrary.shared.DomainConfig;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.Location;
+import org.bukkit.block.Biome;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class BlockBiomeCondition extends AbstractCondition {
+public class BiomeCondition extends AbstractCondition {
 
     private String biome;
 
-    public BlockBiomeCondition(String biome) {
+    public BiomeCondition(String biome) {
         this.biome = biome;
     }
 
     @Override
     public boolean test(ConditionContext context) {
-        if (!(context.getBukkitEvent() instanceof BlockBreakEvent event)) return false;
-        return evaluate(event.getBlock().getBiome().name(), biome.toUpperCase());
+        Location location = context.getLocation();
+        if (location == null) return false;
+        if (location.getWorld() == null) return false;
+
+        return evaluate(location.getWorld().getBiome(location).name(), Biome.valueOf(biome).name());
     }
 
     @Override
@@ -33,11 +37,11 @@ public class BlockBiomeCondition extends AbstractCondition {
     public void applyEdit(String field, String value) {
         switch (field) {
             case "biome" -> this.biome = value.toUpperCase();
-            default      -> super.applyEdit(field, value);
+            default -> super.applyEdit(field, value);
         }
     }
 
     public static AbstractCondition fromConfig(DomainConfig config) {
-        return new BlockBiomeCondition(config.getString("biome", "PLAINS"));
+        return new BiomeCondition(config.getString("biome", "PLAINS"));
     }
 }

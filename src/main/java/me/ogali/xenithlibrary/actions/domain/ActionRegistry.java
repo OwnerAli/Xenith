@@ -32,8 +32,8 @@ public final class ActionRegistry {
     private ActionRegistry() {
     }
 
-    public static void registerType(ActionType type) {
-        String key = type.key().toUpperCase(); // consistent with ConditionRegistry
+    public static void registerType(ActionType type, String namespace) {
+        String key = "THIRD_PARTY::" + namespace + "::" + type.key().toUpperCase();
         if (types.containsKey(key)) {
             throw new IllegalStateException("Action type already registered: " + key);
         }
@@ -60,6 +60,26 @@ public final class ActionRegistry {
         data.forEach((key, config) -> {
             try {
                 String typeKey = ((String) config.get("type")).toUpperCase();
+                if (typeKey.contains("THIRD_PARTY::")) return;
+
+                ActionType type = getType(typeKey);
+                AbstractAction action = type.builder().build(new DomainConfig(config));
+                action.setId(key);
+                action.setTypeKey(typeKey);
+                instances.put(key, action);
+            } catch (Exception e) {
+                log("Failed to load action '" + key + "': " + e.getMessage());
+            }
+        });
+    }
+
+    public static void loadThirdParty() {
+        Map<String, Map<String, Object>> data = file.loadAll();
+        data.forEach((key, config) -> {
+            try {
+                String typeKey = ((String) config.get("type")).toUpperCase();
+                if (!typeKey.contains("THIRD_PARTY::")) return;
+
                 ActionType type = getType(typeKey);
                 AbstractAction action = type.builder().build(new DomainConfig(config));
                 action.setId(key);
@@ -99,6 +119,7 @@ public final class ActionRegistry {
     }
 
     public static AbstractAction get(String id) {
+        if (id.contains("THIRD_PARTY::")) return null;
         AbstractAction action = instances.get(id);
         if (action == null) {
             throw new IllegalArgumentException(
@@ -120,6 +141,14 @@ public final class ActionRegistry {
     static void reset() {
         types.clear();
         instances.clear();
+    }
+
+    private static void registerType(ActionType type) {
+        String key = type.key().toUpperCase();
+        if (types.containsKey(key)) {
+            throw new IllegalStateException("Action type already registered: " + key);
+        }
+        types.put(key, type);
     }
 
     private static void log(String message) {

@@ -2,9 +2,9 @@ package me.ogali.xenithlibrary.conditions.impl;
 
 import me.ogali.xenithlibrary.conditions.domain.AbstractCondition;
 import me.ogali.xenithlibrary.conditions.domain.ConditionContext;
+import me.ogali.xenithlibrary.conditions.domain.HandSlot;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ToolLoreCondition extends AbstractCondition {
-
-    private String lore; // a single line to check for
+    private String lore;
+    private HandSlot hand;
 
     public ToolLoreCondition(String lore) {
         this.lore = lore;
@@ -22,9 +22,10 @@ public class ToolLoreCondition extends AbstractCondition {
 
     @Override
     public boolean test(ConditionContext context) {
-        if (!(context.getBukkitEvent() instanceof BlockBreakEvent event)) return false;
-        Player player = event.getPlayer();
-        ItemStack tool = player.getInventory().getItemInMainHand();
+        Player player = context.getPlayer();
+        if (player == null) return false;
+
+        ItemStack tool = hand.getItem(player);
         ItemMeta meta = tool.getItemMeta();
         if (meta == null || !meta.hasLore()) return false;
         List<String> loreLines = meta.getLore();
@@ -37,6 +38,7 @@ public class ToolLoreCondition extends AbstractCondition {
     public Map<String, Object> serialize() {
         Map<String, Object> data = new LinkedHashMap<>(super.serialize());
         data.put("lore", lore);
+        data.put("hand", hand);
         return data;
     }
 
@@ -44,7 +46,8 @@ public class ToolLoreCondition extends AbstractCondition {
     public void applyEdit(String field, String value) {
         switch (field) {
             case "lore" -> this.lore = value;
-            default     -> super.applyEdit(field, value);
+            case "hand" -> this.hand = HandSlot.valueOf(value.toUpperCase());
+            default -> super.applyEdit(field, value);
         }
     }
 

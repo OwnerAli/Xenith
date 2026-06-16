@@ -4,7 +4,7 @@ import me.ogali.xenithlibrary.conditions.domain.AbstractCondition;
 import me.ogali.xenithlibrary.conditions.domain.ConditionContext;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import org.bukkit.Material;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.block.Block;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -19,8 +19,9 @@ public class BlockTypeCondition extends AbstractCondition {
 
     @Override
     public boolean test(ConditionContext context) {
-        if (!(context.getBukkitEvent() instanceof BlockBreakEvent event)) return false;
-        return evaluate(event.getBlock().getType().name(), material.toUpperCase());
+        Block block = context.getBlock();
+        if (block == null) return false;
+        return evaluate(block.getType().name(), material.toUpperCase());
     }
 
     @Override
@@ -34,7 +35,7 @@ public class BlockTypeCondition extends AbstractCondition {
     public void applyEdit(String field, String value) {
         switch (field) {
             case "material" -> this.material = value.toUpperCase();
-            default         -> super.applyEdit(field, value);
+            default -> super.applyEdit(field, value);
         }
     }
 

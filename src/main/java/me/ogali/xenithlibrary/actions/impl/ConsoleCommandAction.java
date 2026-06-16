@@ -8,6 +8,9 @@ import me.ogali.xenithlibrary.shared.DomainConfig;
 import me.ogali.xenithlibrary.utilities.Chat;
 import org.bukkit.Bukkit;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class ConsoleCommandAction extends AbstractAction {
     private String command;
 
@@ -28,8 +31,8 @@ public class ConsoleCommandAction extends AbstractAction {
     }
 
     @Override
-    public java.util.Map<String, Object> serialize() {
-        java.util.Map<String, Object> data = new java.util.LinkedHashMap<>(super.serialize());
+    public Map<String, Object> serialize() {
+        Map<String, Object> data = new LinkedHashMap<>(super.serialize());
         data.put("command", command);
         return data;
     }

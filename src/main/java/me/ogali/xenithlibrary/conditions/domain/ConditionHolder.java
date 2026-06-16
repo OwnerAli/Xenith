@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Holds a set of conditions and evaluates them together.
@@ -54,10 +55,11 @@ public final class ConditionHolder {
         return conditions.stream().map(AbstractCondition::getId).toList();
     }
 
-    public ConditionHolder fromIdList(List<String> ids) {
+    public static ConditionHolder fromIdList(List<String> ids) {
         return new ConditionHolder(
                 ids.stream()
                         .map(ConditionRegistry::get)
+                        .filter(Objects::nonNull)
                         .toList()
         );
     }

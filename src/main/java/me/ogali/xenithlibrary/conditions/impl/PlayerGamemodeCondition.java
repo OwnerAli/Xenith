@@ -4,7 +4,7 @@ import me.ogali.xenithlibrary.conditions.domain.AbstractCondition;
 import me.ogali.xenithlibrary.conditions.domain.ConditionContext;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import org.bukkit.GameMode;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.entity.Player;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -19,8 +19,9 @@ public class PlayerGamemodeCondition extends AbstractCondition {
 
     @Override
     public boolean test(ConditionContext context) {
-        if (!(context.getBukkitEvent() instanceof BlockBreakEvent event)) return false;
-        return evaluate(event.getPlayer().getGameMode().name(), gamemode.toUpperCase());
+        Player player = context.getPlayer();
+        if (player == null) return false;
+        return evaluate(player.getGameMode().name(), gamemode.toUpperCase());
     }
 
     @Override
@@ -34,7 +35,7 @@ public class PlayerGamemodeCondition extends AbstractCondition {
     public void applyEdit(String field, String value) {
         switch (field) {
             case "gamemode" -> this.gamemode = value.toUpperCase();
-            default         -> super.applyEdit(field, value);
+            default -> super.applyEdit(field, value);
         }
     }
 

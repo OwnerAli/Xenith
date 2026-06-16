@@ -2,9 +2,9 @@ package me.ogali.xenithlibrary.conditions.impl;
 
 import me.ogali.xenithlibrary.conditions.domain.AbstractCondition;
 import me.ogali.xenithlibrary.conditions.domain.ConditionContext;
+import me.ogali.xenithlibrary.conditions.domain.HandSlot;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.LinkedHashMap;
@@ -13,6 +13,7 @@ import java.util.Map;
 public class ToolEnchantmentCondition extends AbstractCondition {
 
     private String enchantment;
+    private HandSlot hand;
 
     public ToolEnchantmentCondition(String enchantment) {
         this.enchantment = enchantment;
@@ -20,12 +21,14 @@ public class ToolEnchantmentCondition extends AbstractCondition {
 
     @Override
     public boolean test(ConditionContext context) {
-        if (!(context.getBukkitEvent() instanceof BlockBreakEvent event)) return false;
-        Player player = event.getPlayer();
-        ItemStack tool = player.getInventory().getItemInMainHand();
+        Player player = context.getPlayer();
+        if (player == null) return false;
+
+        ItemStack tool = hand.getItem(player);
         if (!tool.hasItemMeta()) return false;
+
         boolean hasEnchant = tool.getEnchantments().keySet().stream()
-                .anyMatch(e -> e.getKey().getKey().equalsIgnoreCase(enchantment));
+                .anyMatch(e -> e.getKeyOrThrow().getKey().equalsIgnoreCase(enchantment));
         return evaluate(String.valueOf(hasEnchant), "true");
     }
 
@@ -33,6 +36,7 @@ public class ToolEnchantmentCondition extends AbstractCondition {
     public Map<String, Object> serialize() {
         Map<String, Object> data = new LinkedHashMap<>(super.serialize());
         data.put("enchantment", enchantment);
+        data.put("hand", hand);
         return data;
     }
 
@@ -40,7 +44,8 @@ public class ToolEnchantmentCondition extends AbstractCondition {
     public void applyEdit(String field, String value) {
         switch (field) {
             case "enchantment" -> this.enchantment = value.toLowerCase();
-            default            -> super.applyEdit(field, value);
+            case "hand" -> this.hand = HandSlot.valueOf(value.toUpperCase());
+            default -> super.applyEdit(field, value);
         }
     }
 

@@ -20,8 +20,7 @@ public final class ConditionRegistry {
         registerType(new ConditionType("COMPOSITE", CompositeCondition::fromConfig, Material.IRON_CHAIN));
         registerType(new ConditionType("BLOCK_TYPE", BlockTypeCondition::fromConfig, Material.GRASS_BLOCK));
         registerType(new ConditionType("BLOCK_AGE", BlockAgeCondition::fromConfig, Material.CLOCK));
-        registerType(new ConditionType("BLOCK_BIOME", BlockBiomeCondition::fromConfig, Material.FERN));
-        registerType(new ConditionType("BLOCK_WORLD", BlockWorldCondition::fromConfig, Material.ENDER_PEARL));
+        registerType(new ConditionType("WORLD", WorldCondition::fromConfig, Material.ENDER_PEARL));
         registerType(new ConditionType("TOOL_MATERIAL", ToolMaterialCondition::fromConfig, Material.IRON_PICKAXE));
         registerType(new ConditionType("TOOL_ENCHANTMENT", ToolEnchantmentCondition::fromConfig, Material.ENCHANTING_TABLE));
         registerType(new ConditionType("TOOL_ENCHANTMENT_LEVEL", ToolEnchantmentLevelCondition::fromConfig, Material.EXPERIENCE_BOTTLE));
@@ -29,21 +28,20 @@ public final class ConditionRegistry {
         registerType(new ConditionType("TOOL_NAME", ToolNameCondition::fromConfig, Material.NAME_TAG));
         registerType(new ConditionType("TOOL_LORE", ToolLoreCondition::fromConfig, Material.WRITABLE_BOOK));
         registerType(new ConditionType("PLAYER_GAMEMODE", PlayerGamemodeCondition::fromConfig, Material.COMPASS));
-        registerType(new ConditionType("PLAYER_WORLD", PlayerWorldCondition::fromConfig, Material.GRASS_BLOCK));
         registerType(new ConditionType("PLAYER_HEALTH", PlayerHealthCondition::fromConfig, Material.RED_DYE));
         registerType(new ConditionType("PLAYER_LEVEL", PlayerLevelCondition::fromConfig, Material.EXPERIENCE_BOTTLE));
         registerType(new ConditionType("PLAYER_PERMISSION", PlayerPermissionCondition::fromConfig, Material.GOLDEN_APPLE));
         registerType(new ConditionType("PLAYER_IS_SNEAKING", PlayerIsSneakingCondition::fromConfig, Material.LEATHER_BOOTS));
         registerType(new ConditionType("PLAYER_IS_SPRINTING", PlayerIsSprintingCondition::fromConfig, Material.FEATHER));
-        registerType(new ConditionType("PLAYER_BIOME", PlayerBiomeCondition::fromConfig, Material.SUNFLOWER));
+        registerType(new ConditionType("LOCATION_BIOME", BiomeCondition::fromConfig, Material.SUNFLOWER));
         registerType(new ConditionType("PLACEHOLDER", PlaceholderCondition::fromConfig, Material.ITEM_FRAME));
     }
 
     private ConditionRegistry() {
     }
 
-    public static void registerType(ConditionType type) {
-        String key = type.getKey().toUpperCase();
+    public static void registerType(ConditionType type, String namespace) {
+        String key = "THIRD_PARTY::" + namespace + "::" + type.getKey().toUpperCase();
         if (types.containsKey(key)) {
             throw new IllegalStateException("Condition type already registered: " + key);
         }
@@ -97,6 +95,7 @@ public final class ConditionRegistry {
     }
 
     public static AbstractCondition get(String id) {
+        if (id.contains("THIRD_PARTY::")) return null;
         AbstractCondition condition = instances.get(id);
         if (condition == null) {
             throw new IllegalArgumentException(
@@ -144,6 +143,14 @@ public final class ConditionRegistry {
     static void reset() {
         types.clear();
         instances.clear();
+    }
+
+    private static void registerType(ConditionType type) {
+        String key = type.getKey().toUpperCase();
+        if (types.containsKey(key)) {
+            throw new IllegalStateException("Condition type already registered: " + key);
+        }
+        types.put(key, type);
     }
 
     private static void log(String message) {

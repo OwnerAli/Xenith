@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Holds a list of actions and executes them in order.
@@ -24,6 +25,15 @@ public final class ActionHolder {
         return new ActionHolder();
     }
 
+    public static ActionHolder fromIdList(List<String> ids) {
+        return new ActionHolder(
+                ids.stream()
+                        .map(ActionRegistry::get)
+                        .filter(Objects::nonNull)
+                        .toList()
+        );
+    }
+
     public void executeAll(ActionContext context) {
         actions.forEach(a -> a.execute(context));
     }
@@ -34,14 +44,6 @@ public final class ActionHolder {
 
     public List<String> toIdList() {
         return actions.stream().map(AbstractAction::getId).toList();
-    }
-
-    public ActionHolder fromIdList(List<String> ids) {
-        return new ActionHolder(
-                ids.stream()
-                        .map(ActionRegistry::get)
-                        .toList()
-        );
     }
 
     public ActionHolder copy() {

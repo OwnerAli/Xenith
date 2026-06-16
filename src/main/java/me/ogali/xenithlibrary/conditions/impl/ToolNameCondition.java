@@ -2,9 +2,9 @@ package me.ogali.xenithlibrary.conditions.impl;
 
 import me.ogali.xenithlibrary.conditions.domain.AbstractCondition;
 import me.ogali.xenithlibrary.conditions.domain.ConditionContext;
+import me.ogali.xenithlibrary.conditions.domain.HandSlot;
 import me.ogali.xenithlibrary.shared.DomainConfig;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -12,8 +12,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ToolNameCondition extends AbstractCondition {
-
     private String name;
+    private HandSlot hand;
 
     public ToolNameCondition(String name) {
         this.name = name;
@@ -21,9 +21,10 @@ public class ToolNameCondition extends AbstractCondition {
 
     @Override
     public boolean test(ConditionContext context) {
-        if (!(context.getBukkitEvent() instanceof BlockBreakEvent event)) return false;
-        Player player = event.getPlayer();
-        ItemStack tool = player.getInventory().getItemInMainHand();
+        Player player = context.getPlayer();
+        if (player == null) return false;
+
+        ItemStack tool = hand.getItem(player);
         ItemMeta meta = tool.getItemMeta();
         if (meta == null || !meta.hasDisplayName()) return false;
         return evaluate(meta.getDisplayName(), name);
@@ -33,6 +34,7 @@ public class ToolNameCondition extends AbstractCondition {
     public Map<String, Object> serialize() {
         Map<String, Object> data = new LinkedHashMap<>(super.serialize());
         data.put("name", name);
+        data.put("hand", hand);
         return data;
     }
 
@@ -40,7 +42,8 @@ public class ToolNameCondition extends AbstractCondition {
     public void applyEdit(String field, String value) {
         switch (field) {
             case "name" -> this.name = value;
-            default     -> super.applyEdit(field, value);
+            case "hand" -> this.hand = HandSlot.valueOf(value.toUpperCase());
+            default -> super.applyEdit(field, value);
         }
     }
 

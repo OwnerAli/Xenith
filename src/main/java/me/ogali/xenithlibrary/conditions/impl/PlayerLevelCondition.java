@@ -3,7 +3,7 @@ package me.ogali.xenithlibrary.conditions.impl;
 import me.ogali.xenithlibrary.conditions.domain.AbstractCondition;
 import me.ogali.xenithlibrary.conditions.domain.ConditionContext;
 import me.ogali.xenithlibrary.shared.DomainConfig;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.entity.Player;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,8 +18,9 @@ public class PlayerLevelCondition extends AbstractCondition {
 
     @Override
     public boolean test(ConditionContext context) {
-        if (!(context.getBukkitEvent() instanceof BlockBreakEvent event)) return false;
-        return evaluate(String.valueOf(event.getPlayer().getLevel()), String.valueOf(level));
+        Player player = context.getPlayer();
+        if (player == null) return false;
+        return evaluate(String.valueOf(player.getLevel()), String.valueOf(level));
     }
 
     @Override
@@ -33,7 +34,7 @@ public class PlayerLevelCondition extends AbstractCondition {
     public void applyEdit(String field, String value) {
         switch (field) {
             case "level" -> this.level = Integer.parseInt(value);
-            default      -> super.applyEdit(field, value);
+            default -> super.applyEdit(field, value);
         }
     }
 

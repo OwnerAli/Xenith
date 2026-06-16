@@ -26,7 +26,7 @@ public class PlaceholderCondition extends AbstractCondition {
         if (XenithLibrary.isPapiEnabled()) {
             actual = PlaceholderAPI.setPlaceholders(context.getPlayer(), placeholder);
         } else {
-            actual = placeholder; // PAPI unavailable — can't resolve
+            throw new IllegalArgumentException("Please install PlaceHolderAPI (PAPI) to use this condition!");
         }
 
         return evaluate(actual, expected);

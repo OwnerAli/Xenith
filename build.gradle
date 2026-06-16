@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'com.gradleup.shadow' version "${shadowVersion}"
+    id 'maven-publish'
 }
 
 group = project.property('group')
@@ -60,5 +61,15 @@ build.dependsOn shadowJar
 processResources {
     filesMatching('plugin.yml') {
         expand project.properties
+    }
+}
+
+// ── Publishing ───────────────────────────────────
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact shadowJar
+        }
     }
 }

@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,10 +22,12 @@ import java.util.regex.Pattern;
 @ToString
 public class Context {
     private Player player;
+    private Block block;
+    private Entity killer;
+    private Entity killed;
     private Event bukkitEvent;
-    private ItemStack mainHandItem;
-    private ItemStack offHandItem;
     private Location location;
+    private World world;
     private final PersistentData data = new PersistentData();
 
     public static Context of(Player player, Event event) {
@@ -39,16 +43,6 @@ public class Context {
 
     public static Context of(Player player) {
         return of(player, null);
-    }
-
-    public Context withMainHandItem(ItemStack item) {
-        this.mainHandItem = item;
-        return this;
-    }
-
-    public Context withOffHandItem(ItemStack item) {
-        this.offHandItem = item;
-        return this;
     }
 
     public Context withLocation(Location location) {

@@ -4,7 +4,6 @@ import me.ogali.xenithlibrary.context.Context;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.inventory.ItemStack;
 
 public class ActionContext extends Context {
 
@@ -20,18 +19,8 @@ public class ActionContext extends Context {
     }
 
     public static ActionContext of(Player player, Event event,
-                                   ItemStack mainHand, ItemStack offHand) {
-        return (ActionContext) of(player, event)
-                .withMainHandItem(mainHand)
-                .withOffHandItem(offHand);
-    }
-
-    public static ActionContext of(Player player, Event event,
-                                   ItemStack mainHand, ItemStack offHand,
                                    Location location) {
         return (ActionContext) of(player, event)
-                .withMainHandItem(mainHand)
-                .withOffHandItem(offHand)
                 .withLocation(location);
     }
 

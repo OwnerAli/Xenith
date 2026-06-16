@@ -35,7 +35,7 @@ public class BlockAgeCondition extends AbstractCondition {
     public void applyEdit(String field, String value) {
         switch (field) {
             case "age" -> this.age = Integer.parseInt(value);
-            default    -> super.applyEdit(field, value);
+            default -> super.applyEdit(field, value);
         }
     }
 

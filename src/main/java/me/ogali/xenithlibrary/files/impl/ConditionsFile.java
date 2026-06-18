@@ -1,75 +1,44 @@
 package me.ogali.xenithlibrary.files.impl;
 
 import me.ogali.xenithlibrary.XenithLibrary;
-import me.ogali.xenithlibrary.condition.domain.AbstractCondition;
-import me.ogali.xenithlibrary.condition.impl.ItemStackCondition;
-import me.ogali.xenithlibrary.condition.impl.impl.ItemDurabilityCondition;
-import me.ogali.xenithlibrary.condition.impl.impl.ItemLoreContainsCondition;
-import me.ogali.xenithlibrary.condition.impl.impl.ItemLoreMatchCondition;
-import me.ogali.xenithlibrary.condition.impl.impl.StringMatchItemCondition;
-import me.ogali.xenithlibrary.registiry.impl.ConditionRegistry;
-import me.ogali.xenithlibrary.utilities.Serialization;
-import org.bukkit.inventory.ItemStack;
+import me.ogali.xenithlibrary.files.YmlFileManager;
+import me.ogali.xenithlibrary.files.domain.PluginFile;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
-public class ConditionsFile extends XenithJsonFile<AbstractCondition<?, ?>> {
+public class ConditionsFile implements PluginFile {
+    private static final String FILE_NAME = "conditions";
+    private final YmlFileManager fileManager;
 
     public ConditionsFile() {
-        super("conditions");
-    }
-
-    public void save(AbstractCondition<?, ?> condition) {
-        String id = condition.getId();
-
-        set(id + ".type", condition.getType());
-        set(id + ".priority", condition.getPriority());
-        set(id + ".negate", condition.isNegate());
-        if (condition instanceof ItemStackCondition<?> itemStackCondition) {
-            if (itemStackCondition.getValue() instanceof ItemStack itemStack) {
-                set(id + ".value", Serialization.serialize(itemStack));
-                return;
-            }
-        }
-        set(id + ".value", condition.getValue());
+        this.fileManager = new YmlFileManager(XenithLibrary.getInstance().getDataFolder());
+        fileManager.initFile(FILE_NAME);
     }
 
     @Override
-    public void load() {
-        ConditionRegistry conditionRegistry = XenithLibrary.getInstance().getRegistryManager()
-                .getRegistry(ConditionRegistry.class);
-        singleLayerKeySet().forEach(key -> {
-            AbstractCondition<?, ?> condition = getCondition(key);
-            conditionRegistry.register(condition);
-        });
+    @SuppressWarnings("unchecked")
+    public Map<String, Map<String, Object>> loadAll() {
+        Map<String, Object> raw = fileManager.loadAll(FILE_NAME);
+        if (raw.isEmpty()) return Collections.emptyMap();
+
+        // Every top-level value is a condition config block (Map<String, Object>)
+        return (Map<String, Map<String, Object>>) (Map<?, ?>) raw;
     }
 
-    public void delete(String conditionId) {
-        set(conditionId, null);
+    @Override
+    public CompletableFuture<Void> save(String key, Object value) {
+        return fileManager.save(FILE_NAME, key, value);
     }
 
-    public AbstractCondition<?, ?> getCondition(String key) {
-        String type = getString(key + ".type");
-        int priority = getInt(key + ".priority");
-        boolean negate = getBoolean(key + ".negate");
-        Object value = get(key + ".value");
-        ItemStack itemStack = null;
-
-        if (type.equalsIgnoreCase("itemStack")) {
-            itemStack = Serialization.deserialize((String) value);
-        }
-
-        return switch (type) {
-            case "itemStack" -> new ItemStackCondition<>(key, priority, negate, itemStack);
-            case "itemLoreContains" -> new ItemLoreContainsCondition(key, priority, negate, (String) value);
-            case "itemLoreMatch" -> {
-                value = getStringList(key + ".value");
-                yield new ItemLoreMatchCondition(key, priority, negate, (List<String>) value);
-            }
-            case "stringMatch" -> new StringMatchItemCondition(key, priority, negate, (String) value);
-            case "itemDurability" -> new ItemDurabilityCondition(key, priority, negate, (Integer) value);
-            default -> null;
-        };
+    @Override
+    public CompletableFuture<Void> saveAll(Map<String, Object> data) {
+        return fileManager.saveAll(FILE_NAME, data);
     }
 
+    @Override
+    public CompletableFuture<Void> delete(String key) {
+        return fileManager.delete(FILE_NAME, key);
+    }
 }

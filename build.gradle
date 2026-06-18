@@ -1,0 +1,81 @@
+plugins {
+    id 'java'
+    id 'com.gradleup.shadow' version "${shadowVersion}"
+    id 'maven-publish'
+}
+
+group = project.property('group')
+version = project.property('version')
+
+// ── Java ──────────────────────────────────────────────────────────────────────
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(javaVersion as int)
+    }
+}
+
+// ── Repositories ──────────────────────────────────────────────────────────────
+
+repositories {
+    mavenCentral()
+    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url 'https://oss.sonatype.org/content/groups/public/' }
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://repo.aikar.co/content/groups/aikar/' }
+    maven { url 'https://maven.enginehub.org/repo/' }
+    maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+}
+
+// ── Dependencies ──────────────────────────────────────────────────────────────
+
+dependencies {
+    // Server API
+    compileOnly "org.spigotmc:spigot-api:${spigotVersion}"
+
+    // Lombok
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    // Shaded
+    implementation "com.github.stefvanschie.inventoryframework:IF:${ifVersion}"
+    implementation "co.aikar:acf-paper:${acfVersion}"
+
+    // Provided plugins
+    compileOnly "com.sk89q.worldguard:worldguard-bukkit:${worldguardVersion}"
+    compileOnly "me.clip:placeholderapi:${placeholderApiVersion}"
+}
+
+// ── Shadow (shading + relocation) ─────────────────────────────────────────────
+
+shadowJar {
+    archiveFileName = "${jarName}-${version}.jar"
+
+    relocate 'com.github.stefvanschie.inventoryframework', 'me.ogali.xenithlibrary.inventoryframework'
+}
+
+build.dependsOn shadowJar
+
+// ── Resources (enable filtering like Maven) ───────────────────────────────────
+
+processResources {
+    filesMatching('plugin.yml') {
+        expand project.properties
+    }
+}
+
+// ── Publishing ───────────────────────────────────
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact shadowJar
+        }
+    }
+}
+
+tasks.withType(PublishToMavenLocal).configureEach {
+    dependsOn(shadowJar)
+}
+
+jar.enabled = false

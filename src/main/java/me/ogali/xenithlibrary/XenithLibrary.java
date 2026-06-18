@@ -1,37 +1,77 @@
 package me.ogali.xenithlibrary;
 
+import co.aikar.commands.MessageType;
+import co.aikar.commands.PaperCommandManager;
 import lombok.Getter;
-import me.ogali.xenithlibrary.manager.RegistryManager;
-import me.ogali.xenithlibrary.registiry.domain.Registry;
-import me.ogali.xenithlibrary.registiry.domain.impl.AbstractMapRegistry;
+import me.ogali.xenithlibrary.actions.domain.ActionRegistry;
+import me.ogali.xenithlibrary.commands.ActionCommands;
+import me.ogali.xenithlibrary.commands.ConditionCommands;
+import me.ogali.xenithlibrary.conditions.domain.ConditionRegistry;
+import me.ogali.xenithlibrary.utilities.Chat;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.reflections.Reflections;
 
+import java.util.Random;
+import java.util.logging.Level;
+
+@Getter
 public final class XenithLibrary extends JavaPlugin {
 
     @Getter
     private static XenithLibrary instance;
-    @Getter
-    private RegistryManager registryManager;
+    private Random random;
+
+    private boolean papiEnabled;
+
+    public static boolean isPapiEnabled() {
+        return instance.papiEnabled;
+    }
 
     @Override
     public void onEnable() {
         instance = this;
-        initializeRegistries();
+        random = new Random();
+        papiEnabled = checkPapi();
+        loadPluginData();
+        registerCommands();
     }
 
     @Override
     public void onDisable() {
-    }
-
-    private void initializeRegistries() {
-        this.registryManager = new RegistryManager();
-
-        Reflections reflections = new Reflections("me.ogali.xenithlibrary");
-
-        for (Class<?> registryClass : reflections.getSubTypesOf(AbstractMapRegistry.class)) {
-            registryManager.setRegistry((Class<? extends Registry<?,?>>) registryClass);
+        try {
+            ConditionRegistry.saveAll();
+            ActionRegistry.saveAll();
+        } catch (Exception e) {
+            getLogger().log(Level.SEVERE, "Failed to save data on shutdown", e);
         }
     }
 
+    private void loadPluginData() {
+        ActionRegistry.loadFromFile();
+        ConditionRegistry.loadFromFile();
+    }
+
+    private void registerCommands() {
+        PaperCommandManager cm = new PaperCommandManager(this);
+        cm.setFormat(MessageType.SYNTAX, ChatColor.RED, ChatColor.RED);
+
+        // Action command
+        cm.registerCommand(new ActionCommands());
+        cm.getCommandCompletions().registerCompletion("actions", _ ->
+                ActionRegistry.allInstances().keySet().stream().toList());
+
+        // Condition command
+        cm.registerCommand(new ConditionCommands());
+        cm.getCommandCompletions().registerCompletion("conditions", _ ->
+                ConditionRegistry.allInstances().keySet().stream().toList());
+    }
+
+    private boolean checkPapi() {
+        boolean found = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
+        if (!found) {
+            Chat.log("PlaceholderAPI not found — placeholder conditions will be unavailable.");
+        }
+        return found;
+    }
 }

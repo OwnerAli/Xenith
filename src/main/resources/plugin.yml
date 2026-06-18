@@ -1,4 +1,8 @@
 name: Xenith
 version: '${project.version}'
 main: me.ogali.xenithlibrary.XenithLibrary
-api-version: '1.20'
+api-version: '1.19'
+
+softdepend:
+  - WorldGuard
+  - PlaceholderAPI

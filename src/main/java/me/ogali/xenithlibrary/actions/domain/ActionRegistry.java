@@ -27,6 +27,7 @@ public final class ActionRegistry {
         registerType(new ActionType("GLOBAL_SOUND", GlobalSoundAction::fromConfig, Material.JUKEBOX));
         registerType(new ActionType("PLAYER_ACTION_BAR", PlayerActionBarAction::fromConfig, Material.NAME_TAG));
         registerType(new ActionType("PLAYER_TITLE", PlayerTitleAction::fromConfig, Material.BOOK));
+        registerType(new ActionType("HEAL_PLAYER", HealPlayerAction::fromConfig, Material.POTION));
     }
 
     private ActionRegistry() {
